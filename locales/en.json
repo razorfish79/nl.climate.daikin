@@ -1,0 +1,12 @@
+{
+  "settings": {
+    "device": {
+      "title": "Daikin equipment settings",
+      "intro": "To connect to your airconditioner via WiFi we need the settings below.",
+      "ip": "IP-Address:"
+    },
+    "button": {
+      "save": "Save"
+    }
+  }
+}

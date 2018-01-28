@@ -1,0 +1,12 @@
+{
+  "settings": {
+    "device": {
+      "title": "Daikin apparaat instellingen",
+      "intro": "Om verbinding te kunnen maken met uw airconditioner via WiFi zijn onderstaande gegevens benodigd.",
+      "ip": "IP-adres:"
+    },
+    "button": {
+      "save": "Opslaan"
+    }
+  }
+}

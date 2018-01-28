@@ -1,0 +1,359 @@
+{
+    "id": "nl.climate.daikin",
+    "sdk": 2,
+    "name": {
+        "en": "Daikin AC",
+		"nl": "Daikin AC"
+    },
+    "description": {
+        "en": "Adds support for Daikin Airconditioners.",
+		"nl": "Adds support for Daikin Airconditioners."
+    },
+    "category": [
+        "appliances",
+        "climate"
+    ],
+    "version": "0.0.1",
+    "compatibility": ">=1.5.6",
+    "author": {
+        "name": "Peter Eier",
+        "email": "peter.eier@upcmail.nl"
+    },
+    "contributing": {
+      "donate": {
+        "paypal": {
+          "username": "petereier",
+          "currency": "EUR"
+        }
+      }
+    },
+    "images": {
+      "large": "/assets/images/large.png",
+      "small": "/assets/images/small.png"
+    },
+	"flow": {
+    "triggers": [
+      {
+        "id": "fan_speed",
+        "title": {
+          "en": "Fan speed changed",
+          "nl": "Fan snelheid is wijzigd"
+        },
+        "hint": {
+          "en": "Trigger something when the airconditioner fan speed changes.",
+          "nl": "Trigger iets wanneer de airconditioner fan snelheid wijzigd."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device"
+          },
+          {
+            "name": "fanspeed",
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "Auto",
+                "label": {
+                  "en": "Automatic",
+                  "nl": "Automatisch"
+                }
+              },
+              {
+                "id": "Low",
+                "label": {
+                  "en": "Lowest speed",
+                  "nl": "Laagste snelheid"
+                }
+              },
+              {
+                "id": "High",
+                "label": {
+                  "en": "Highest speed",
+                  "nl": "Hoogste snelheid"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "conditions": [
+        {
+            "id": "has_temperature_more_than",
+            "title": {
+                "en": "The temperature !{{is|isn't}} more than",
+                "nl": "De temperatuur !{{is|is niet}} meer dan"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device"
+                },
+                {
+                    "name": "temperature",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "has_temperature_less_than",
+            "title": {
+                "en": "The temperature !{{is|isn't}} less than",
+                "nl": "De temperatuur !{{is|is niet}} minder dan"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device"
+                },
+                {
+                    "name": "temperature",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "has_temperature_between",
+            "title": {
+                "en": "The temperature !{{is|isn't}} between",
+                "nl": "De temperatuur !{{is|is niet}} tussen"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device"
+                },
+                {
+                    "name": "temperature_from",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                },
+                                    {
+                    "name": "temperature_to",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        }
+    ],
+    "actions": [
+      {
+        "id": "ctrl_power_on",
+        "title": {
+          "en": "Turn ON the airconditioner",
+          "nl": "Zet de airconditioning AAN"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "ctrl_power",
+            "filter": "driver_id=ctrl_power"
+          }
+        ]
+      },
+      {
+        "id": "ctrl_power_off",
+        "title": {
+          "en": "Turn OFF the airconditioner",
+          "nl": "Zet de airconditioning UIT"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "ctrl_power",
+            "filter": "driver_id=ctrl_power"
+          }
+        ]
+      }
+    ]
+  },
+  "capabilities": {
+      "my_temperature_capability": {
+         "type": "number",
+         "title": {
+             "en": "My temperature capability"
+         },
+        "getable": true,
+        "setable": false
+	  }
+  },
+  "drivers": [
+   {
+     "id": "inverter",
+     "name": {
+       "en": "Inverter",
+       "nl": "Inverter"
+     },
+     "images": {
+       "large": "/drivers/inverter/assets/images/large.png",
+       "small": "/drivers/inverter/assets/images/small.png"
+     },	 	 
+     "settings": [{
+         "type": "group",
+         "label": {
+         "en": "Connected via WiFi using:",
+         "nl": "Verbonden via WiFi gebruikmakende van:"
+         },
+         "children": [{
+              "id": "inverter_ip",
+              "type": "text",
+              "label": {
+              "en": "IP address",
+              "nl": "IP adres"
+              },
+              "value": ""
+          }]
+     }],
+     "class": "sensor",
+     "capabilities": [
+   	   "measure_temperature",
+	   "my_temperature_capability"
+     ],
+     "mobile": {
+         "components": [
+             {
+               "id": "icon",
+               "capabilities": []
+             },
+             {
+                 "id": "sensor",
+                 "capabilities": [
+					"measure_temperature",
+					"my_temperature_capability"			
+				 ],
+                 "options": {
+                    "showTitle": true
+                 }
+             }
+         ]
+     },	 
+     "pair": [{
+	     "id": "start"
+	  },
+	  {
+         "id": "list_my_devices",
+         "template": "list_devices",
+         "navigation": {
+             "next": "add_my_devices"
+         }
+       },
+	   {
+          "id": "add_my_devices",
+          "template": "add_devices"
+       }
+    ]},
+    {
+      "id": "emura",
+      "name": {
+        "en": "Emura 2",
+        "nl": "Emura 2"
+      },
+      "pair": [{
+          "id": "start"
+      }, {
+          "id": "list_my_devices",
+          "template": "list_devices",
+          "navigation": {
+              "next": "add_my_devices"
+          }
+      }, {
+          "id": "add_my_devices",
+          "template": "add_devices"
+      }],
+      "settings": [{
+          "type": "group",
+          "label": {
+          "en": "Connected via WiFi using:",
+          "nl": "Verbonden via WiFi gebruikmakende van:"
+          },
+          "children": [{
+               "id": "emura_ip",
+               "type": "text",
+               "label": {
+               "en": "IP address",
+               "nl": "IP adres"
+               },
+               "value": ""
+           }]
+      }],
+      "class": "airconditioner",
+      "capabilities": [
+        "onoff",
+        "ac_mode",
+        "fan_speed",
+        "wing_direction",
+        "target_temperature",
+  	    "measure_temperature_outside",
+  	    "measure_temperature_inside"
+      ],
+      "images": {
+        "large": "/drivers/emura/assets/images/large.png",
+        "small": "/drivers/emura/assets/images/small.png"
+      }
+    },	
+    {
+      "id": "nexura",
+      "name": {
+        "en": "Nexura",
+        "nl": "Nexura"
+      },
+      "pair": [{
+          "id": "start"
+      }, {
+          "id": "list_my_devices",
+          "template": "list_devices",
+          "navigation": {
+              "next": "add_my_devices"
+          }
+      }, {
+          "id": "add_my_devices",
+          "template": "add_devices"
+      }],
+      "settings": [{
+          "type": "group",
+          "label": {
+          "en": "Connected via WiFi using:",
+          "nl": "Verbonden via WiFi gebruikmakende van:"
+          },
+          "children": [{
+               "id": "nexura_ip",
+               "type": "text",
+               "label": {
+               "en": "IP address",
+               "nl": "IP adres"
+               },
+               "value": ""
+           }]
+      }],	  	  
+      "class": "airconditioner",
+      "capabilities": [
+        "onoff",
+        "ac_mode",
+        "fan_speed",
+        "wing_direction",
+	    "target_temperature",
+	    "measure_temperature_outside",
+        "measure_temperarure_inside"
+      ],
+      "images": {
+        "large": "/drivers/nexura/assets/images/large.png",
+        "small": "/drivers/nexura/assets/images/small.png"
+      }
+    }	
+  ]
+}

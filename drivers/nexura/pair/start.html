@@ -1,0 +1,75 @@
+<script>
+function saveSettings () {
+    $('#error').html('');
+	$('#save').prop('disabled', true);
+	Homey.emit('manual_add', {
+	    data: { // this data object is saved to- and unique for the device. It is passed on the get and set functions as 1st argument
+	        id: 'NEXURA'+Math.floor(Date.now() / 1000),
+            ip: $('#nexura_ip').val()
+	    },
+	    settings: {
+		    'nexura_ip': $('#nexura_ip').val()
+	    },
+	    name: 'Nexura',
+	}, function( err, result ){
+	    if( err ) return console.error(err);
+	});
+    
+    Homey.on('success', function(device){
+		$('#error').html('Connected, saving...');
+        $('#save').prop('disabled', true);
+        Homey.addDevice({
+            data: { // this data object is saved to- and unique for the device. It is passed on the get and set functions as 1st argument
+                id: 'NEXURA'+Math.floor(Date.now() / 1000),
+                ip: device.settings.nexura_ip
+            },
+            settings: {
+                'nexura_ip': device.settings.nexura_ip
+            },
+            name: device.name,
+            capabilities: []
+        }, function( err, result ){
+            if( err ) return console.error(err);
+            Homey.done();
+        });
+    });
+    
+    Homey.on('error', function(message){
+        $('#error').html('Error: '+message);
+        $('#save').prop('disabled', false);
+    });
+}
+</script>
+<!doctype html>
+<html>
+    <head>
+        <style>
+            label {
+                width: 150px;
+                display:inline-block !important;   
+            }
+            input {
+                border: 1px solid #ccc;
+                padding: 3px;
+            }
+            button {
+                padding: 10px;
+                background-color: #ddd;
+                border: 1px solid #ccc;
+            }
+            #error {
+                color: red;
+            }
+        </style>
+    </head>
+    <body>
+        <p data-i18n="settings.device.intro"></p>
+            <div class="field row">
+                <label data-i18n="settings.device.ip" for="nexura_ip">ip</label>
+                <input id="nexura_ip" type="text" value="" />
+            </div>
+            <br>
+            <p id="error"></p>
+        <button class="right" onclick="saveSettings()" id="save" data-i18n="settings.button.save"></button>
+    </body>
+</html>
