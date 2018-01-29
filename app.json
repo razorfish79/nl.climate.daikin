@@ -185,11 +185,19 @@
   "capabilities": {
       "my_temperature_capability": {
          "type": "number",
+		 "desc": "my temperature",
          "title": {
-             "en": "My temperature capability"
+             "en": "My temperature capability.",
+			 "nl": "Mijn temperatuur capability."
          },
-        "getable": true,
-        "setable": false
+		 "units": {
+			 "en": "°C",
+			  "nl": "°C"
+		 },
+		 "decimals": 2,
+		 "chartType": "spline",
+         "getable": true,
+         "setable": false
 	  }
   },
   "drivers": [
