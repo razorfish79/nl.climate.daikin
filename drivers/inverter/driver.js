@@ -6,11 +6,10 @@ const Homey = require('homey');
 class InverterDriver extends Homey.Driver {
 			
     onPair(socket) {
-
         socket.on('manual_add', function( device, callback ) {
 
-	       var request = require('request');
 		   var devices = {};
+	       var request = require('request');
 		   var url = 'http://' + device.data.ip + '/aircon/get_control_info';
 		   console.log('Calling '+ url);
 		   request(url, function (error, response, body) 
@@ -22,12 +21,12 @@ class InverterDriver extends Homey.Driver {
 					}
 				if (!error && response.statusCode == 200) 
 					{
-		                console.log('Daikin Airconditioner being added...');
 		                devices[device.data.id] = {
 		                  id: device.data.id,
 		                  name: device.name,
 	                      ip: device.data.ip
 		                };
+                   
 						console.log('Device ID: ', device.data.id);
 						console.log('Device ip-address: ', device.data.ip);
 		                callback( null, devices );
@@ -35,7 +34,7 @@ class InverterDriver extends Homey.Driver {
 				  	} else {
 			            socket.emit("error", "http error: "+response.statusCode);
 					}
-			})
+			});
 
             // emit when devices are still being searched
             socket.emit('list_devices', devices );

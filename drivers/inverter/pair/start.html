@@ -1,16 +1,12 @@
 <script>
 function saveSettings () {
     $('#error').html('');
-	$('#save').prop('disabled', true);
-	Homey.emit('manual_add', {
-	    data: { // this data object is saved to- and unique for the device. It is passed on the get and set functions as 1st argument
-	        id: 'INVERTER'+Math.floor(Date.now() / 1000),
-            ip: $('#inverter_ip').val()
-	    },
-	    settings: {
-		    'inverter_ip': $('#inverter_ip').val()
-	    },
-	    name: 'Inverter',
+    $('#save').prop('disabled', true);
+    Homey.emit('manual_add', {
+        // this data object is saved to- and unique for the device. It is passed on the get and set functions as 1st argument
+	    data: { id: 'inverter'+Math.floor(Date.now() / 1000), ip: $('#inverter_ip').val() },
+	    settings: { 'inverter_ip': $('#inverter_ip').val() },
+        name: 'Inverter'  
 	}, function( err, result ){
 	    if( err ) return console.error(err);
 	});
@@ -18,21 +14,16 @@ function saveSettings () {
     Homey.on('success', function(device){
 		$('#error').html('Connected, saving...');
         $('#save').prop('disabled', true);
-        Homey.addDevice({
-            data: { // this data object is saved to- and unique for the device. It is passed on the get and set functions as 1st argument
-                id: 'inverter'+Math.floor(Date.now() / 1000),
-                ip: device.settings.inverter_ip
-            },
-            settings: {
-                'inverter_ip': device.settings.inverter_ip
-            },
-            name: device.name,
-            capabilities: []
-        }, function( err, result ){
-            if( err ) return console.error(err);
-            Homey.done();
-        });
-    });
+       Homey.addDevice({
+           // this data object is saved to- and unique for the device. It is passed on the get and set functions as 1st argument
+   	       data: { id: 'inverter'+Math.floor(Date.now() / 1000), ip: device.settings.inverter_ip },
+   	       settings: { 'inverter_ip': device.settings.inverter_ip },
+           name: device.name
+       }, function( err, result ){
+           if( err ) return console.error(err);
+           Homey.done();
+       });
+   });
     
     Homey.on('error', function(message){
         $('#error').html('Error: '+message);
@@ -66,7 +57,7 @@ function saveSettings () {
         <p data-i18n="settings.device.intro"></p>
             <div class="field row">
                 <label data-i18n="settings.device.ip" for="inverter_ip">ip</label>
-                <input id="inverter_ip" type="text" value="" />
+                <input id="inverter_ip" type="text" value="" placeholder="e.g. 192.168.0.63"/>
             </div>
             <br>
             <p id="error"></p>

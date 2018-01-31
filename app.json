@@ -1,5 +1,7 @@
 {
     "id": "nl.climate.daikin",
+	"version": "0.0.1",
+    "compatibility": ">=1.5.6",
     "sdk": 2,
     "name": {
         "en": "Daikin AC",
@@ -13,23 +15,30 @@
         "appliances",
         "climate"
     ],
-    "version": "0.0.1",
-    "compatibility": ">=1.5.6",
+    "images": {
+      "large": "/assets/images/large.png",
+      "small": "/assets/images/small.png"
+    },
+	"permission": [],
     "author": {
         "name": "Peter Eier",
         "email": "peter.eier@upcmail.nl"
     },
+	"contributors": {
+		"developers": [
+			{
+				"name": "Peter EIER",
+				"email": "peter.eier@upcmail.nl"
+			}
+		]
+	},
     "contributing": {
       "donate": {
         "paypal": {
-          "username": "petereier",
+          "username": "my_paypal.me_username",
           "currency": "EUR"
         }
       }
-    },
-    "images": {
-      "large": "/assets/images/large.png",
-      "small": "/assets/images/small.png"
     },
 	"flow": {
     "triggers": [
@@ -182,16 +191,6 @@
       }
     ]
   },
-  "capabilities": {
-      "my_temperature_capability": {
-         "type": "number",
-         "title": {
-             "en": "My temperature capability"
-         },
-        "getable": true,
-        "setable": false
-	  }
-  },
   "drivers": [
    {
      "id": "inverter",
@@ -199,10 +198,82 @@
        "en": "Inverter",
        "nl": "Inverter"
      },
+     "class": "other",     
+     "capabilities": [
+       "thermostat_mode",
+       "target_temperature",
+	   "measure_temperature.inside",
+       "measure_temperature.outside" 
+     ],
+     "capabilitiesOptions": {
+  		"target_temperature": {
+  			"title": {
+  				"en": "Target",
+  				"nl": "Doel"
+             }   
+         },         
+ 		"measure_temperature.inside": {
+ 			"title": {
+ 				"en": "inside",
+ 				"nl": "binnen"
+            }   
+        },
+		"measure_temperature.outside": {
+			"title": {
+				"en": "outside",
+				"nl": "buiten"
+			}
+		}
+     },     
+     "mobile": {
+         "components": [
+             {
+                 "id": "button",
+                 "capabilities": [ "thermostat_mode"
+                 ],
+                 "options": {
+                    "showTitle": true,
+                    "icons": {
+                        "thermostat_mode": "./drivers/inverter/assets/icon.svg"
+                    }
+                }
+             },
+             {
+                 "id": "sensor",
+                 "capabilities": [
+              	   "measure_temperature.inside",
+                   "measure_temperature.outside"			
+				 ],
+                 "options": {
+                    "showTitle": true
+                 }
+             },
+             {
+               "id": "thermostat",
+               "capabilities": [ "target_temperature" ]
+             }
+         ]
+     },
      "images": {
        "large": "/drivers/inverter/assets/images/large.png",
        "small": "/drivers/inverter/assets/images/small.png"
-     },	 	 
+     },	          
+     "pair": [
+         {
+             "id": "start"
+         },
+         {
+             "id": "list_my_devices",
+             "template": "list_devices",
+             "navigation": {
+                 "next": "add_my_devices"
+             }
+         },
+         {
+              "id": "add_my_devices",
+              "template": "add_devices"
+         }
+     ], 	 
      "settings": [{
          "type": "group",
          "label": {
@@ -218,142 +289,6 @@
               },
               "value": ""
           }]
-     }],
-     "class": "sensor",
-     "capabilities": [
-   	   "measure_temperature",
-	   "my_temperature_capability"
-     ],
-     "mobile": {
-         "components": [
-             {
-               "id": "icon",
-               "capabilities": []
-             },
-             {
-                 "id": "sensor",
-                 "capabilities": [
-					"measure_temperature",
-					"my_temperature_capability"			
-				 ],
-                 "options": {
-                    "showTitle": true
-                 }
-             }
-         ]
-     },	 
-     "pair": [{
-	     "id": "start"
-	  },
-	  {
-         "id": "list_my_devices",
-         "template": "list_devices",
-         "navigation": {
-             "next": "add_my_devices"
-         }
-       },
-	   {
-          "id": "add_my_devices",
-          "template": "add_devices"
-       }
-    ]},
-    {
-      "id": "emura",
-      "name": {
-        "en": "Emura 2",
-        "nl": "Emura 2"
-      },
-      "pair": [{
-          "id": "start"
-      }, {
-          "id": "list_my_devices",
-          "template": "list_devices",
-          "navigation": {
-              "next": "add_my_devices"
-          }
-      }, {
-          "id": "add_my_devices",
-          "template": "add_devices"
-      }],
-      "settings": [{
-          "type": "group",
-          "label": {
-          "en": "Connected via WiFi using:",
-          "nl": "Verbonden via WiFi gebruikmakende van:"
-          },
-          "children": [{
-               "id": "emura_ip",
-               "type": "text",
-               "label": {
-               "en": "IP address",
-               "nl": "IP adres"
-               },
-               "value": ""
-           }]
-      }],
-      "class": "airconditioner",
-      "capabilities": [
-        "onoff",
-        "ac_mode",
-        "fan_speed",
-        "wing_direction",
-        "target_temperature",
-  	    "measure_temperature_outside",
-  	    "measure_temperature_inside"
-      ],
-      "images": {
-        "large": "/drivers/emura/assets/images/large.png",
-        "small": "/drivers/emura/assets/images/small.png"
-      }
-    },	
-    {
-      "id": "nexura",
-      "name": {
-        "en": "Nexura",
-        "nl": "Nexura"
-      },
-      "pair": [{
-          "id": "start"
-      }, {
-          "id": "list_my_devices",
-          "template": "list_devices",
-          "navigation": {
-              "next": "add_my_devices"
-          }
-      }, {
-          "id": "add_my_devices",
-          "template": "add_devices"
-      }],
-      "settings": [{
-          "type": "group",
-          "label": {
-          "en": "Connected via WiFi using:",
-          "nl": "Verbonden via WiFi gebruikmakende van:"
-          },
-          "children": [{
-               "id": "nexura_ip",
-               "type": "text",
-               "label": {
-               "en": "IP address",
-               "nl": "IP adres"
-               },
-               "value": ""
-           }]
-      }],	  	  
-      "class": "airconditioner",
-      "capabilities": [
-        "onoff",
-        "ac_mode",
-        "fan_speed",
-        "wing_direction",
-	    "target_temperature",
-	    "measure_temperature_outside",
-        "measure_temperarure_inside"
-      ],
-      "images": {
-        "large": "/drivers/nexura/assets/images/large.png",
-        "small": "/drivers/nexura/assets/images/small.png"
-      }
-    }	
-  ]
+      }]
+   }]
 }
