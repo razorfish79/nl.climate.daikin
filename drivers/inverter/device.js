@@ -12,13 +12,14 @@ class DaikinDevice extends Homey.Device {
         this.log('class:', this.getClass());
 
 		this.log('Capability registration started...');
-        this.registerCapabilityListener('thermostat_mode', this.onCapabilityMode.bind(this));
-        this.registerCapabilityListener('target_temperature', this.onCapabilityTargetTemp.bind(this));	
+        this.registerCapabilityListener('airco_mode', this.onCapabilityMode.bind(this));
+		this.registerCapabilityListener('fan_rate', this.onCapabilityFanRate.bind(this));			
+		this.registerCapabilityListener('fan_direction', this.onCapabilityFanDir.bind(this));	       
+		this.registerCapabilityListener('airco_humidty', this.onCapabilityAircoHum.bind(this));
+        this.registerCapabilityListener('airco_temperature', this.onCapabilityAircoTemp.bind(this));        
 		this.registerCapabilityListener('measure_temperature.inside', this.onCapabilityMeasureTemperature.bind(this));
         this.registerCapabilityListener('measure_temperature.outside', this.onCapabilityMeasureTemperature.bind(this));       
-		//this.registerCapabilityListener('fan_speed', this.onCapabilityFanSpeed.bind(this));			
-		//this.registerCapabilityListener('wing_direction', this.onCapabilityWingDir.bind(this));	
-        
+                
 		this.log('Registration of Capabilities and Report Listeners completed!');
 
     }
@@ -27,7 +28,8 @@ class DaikinDevice extends Homey.Device {
 		this.log('device added');
 		
 		var deviceData = this.getData();
-		this.deviceRequestSensor(deviceData.ip); // initialize the app
+        this.deviceRequestControl(deviceData.ip); // initialize the app
+		this.deviceRequestSensor(deviceData.ip);  // initialize the app
 	}
 
     // this method is called when the Device is deleted
@@ -43,7 +45,7 @@ class DaikinDevice extends Homey.Device {
 		this.log('deviceRequestControl');
 	    
 		var inverter_ip = value;
-	    util.request_control(inverter_ip, this.updateListeners.bind(this));
+	    util.request_control(inverter_ip, this.updateControlListener.bind(this));
 		
 		return Promise.resolve();
     }
@@ -53,42 +55,38 @@ class DaikinDevice extends Homey.Device {
 		this.log('deviceRequestSensor');
 				
 	    var inverter_ip = value;
-	    util.request_sensor(inverter_ip, this.updateListeners.bind(this));
+	    util.request_sensor(inverter_ip, this.updateSensorListener.bind(this));
 		
 		return Promise.resolve();
     }
 
    // Update values after interrogation
-	updateListeners(value1, value2) {
-		this.log('updateListeners');
-			
-<<<<<<< HEAD
-		const inside = value1;
-		const outside = value2;
-		this.log('updated listeners, hometemp: ', inside);
-		this.log('updated listeners, outsidetemp: ', outside);
+	updateControlListener(control_info) {        
+		this.log('updateControlListener');
+        
+        // mode                        
+		const amode = Number(control_info[2]);		
+		this.onCapabilityMode(amode);
+
+        // temperature
+		const atemp = Number(control_info[4]);
+		this.onCapabilityAircoTemp(atemp);
+
+        // humidity
+		const ahum = Number(control_info[5]);      
+        this.onCapabilityAircoHum(ahum);      
+        	
+		return Promise.resolve();
+	}
+
+   // Update values after interrogation
+	updateSensorListener(sensor_info) {        
+		this.log('updateSensorListener');
+		                        
+		const inside = Number(sensor_info[1]);
+		const outside = Number(sensor_info[3]);
 		
 		this.onCapabilityMeasureTemperature(inside, outside);
-        
-        //hardcoded for test mobile card...
-        this.onCapabilityMode("auto");
-        this.onCapabilityTargetTemp(21);
-=======
-		const hometemp = value1;
-		const outsidetemp = value2;
-		this.log('updated listeners, hometemp: ', hometemp);
-		this.log('updated listeners, outsidetemp: ', outsidetemp);
-		
-		this.onCapabilityMeasureTemperature(hometemp);
-		this.onCapabilityMyMeasureTemperature(outsidetemp);
-		
-		//this.setCapabilityValue('measure_temperature', hometemp);
-		//this.setCapabilityValue('my_temperature_capability', hometemp);		
-		//this.log('get value: ', this.getCapabilityValue('measure_temperature'));
-		//this.log('get value: ', this.getCapabilityValue('my_temperature_capability'));
-		//setTimeout => (function(){ this.log('get value: ', this.getCapabilityValue('measure_temperature')); }, 1000);
-		//setTimeout => (function(){ this.log('get value: ', this.getCapabilityValue('my_temperature_capability')); }, 1000);
->>>>>>> 503ab3f54ec3b6f1aaf2d8da0ba5eff4581228fa
 			
 		return Promise.resolve();
 	}
@@ -105,53 +103,60 @@ class DaikinDevice extends Homey.Device {
 
 
 //----------------------
-<<<<<<< HEAD
 	
-    // Device set mode capability
-    onCapabilityMode(mode) {
+    // Capability 1: Device get/set mode
+    onCapabilityMode(amode) {
 		this.log('onCapabilityMode');
 
-    	this.setCapabilityValue('thermostat_mode', mode);
+		this.log('mode:', amode);
+    	this.setCapabilityValue('airco_mode', amode);
 
 	}
-    
-    // Device set target temperature capability
-    onCapabilityTargetTemp(target) {
-		this.log('onCapabilityTargetTemp');
 
-    	this.setCapabilityValue('target_temperature', target);
+    // Capability 2: Device get/set fan rate
+    onCapabilityFanRate(frate) {
+		this.log('onCapabilityFanRate');
+
+		this.log('fan rate:', frate);
+    	this.setCapabilityValue('fan_rate', frate);
+
+	}
+
+    // Capability 3: Device get/set fan direction
+    onCapabilityFanDirection(fdir) {
+		this.log('onCapabilityFanDirection');
+
+		this.log('fan direction:', fdir);
+    	this.setCapabilityValue('fan_direction', fdir);
+
+	}
+
+    // Capability 4: Device get/set humidity
+    onCapabilityAircoHum(ahum) {
+		this.log('onCapabilityAircoHum');
+
+		this.log('humidity %:', ahum);
+    	this.setCapabilityValue('airco_humidity', ahum);
+
+	}
+        
+    // Capability 5: Device get/set target temperature
+    onCapabilityAircoTemp(atemp) {
+		this.log('onCapabilityAircoTemp');
+
+		this.log('temperature °C:', atemp);
+    	this.setCapabilityValue('airco_temperature', atemp);
 	
     }        
     	
-    // Device measure in/outside temperature capability
+    // Capability 6. +7: Device measure in/outside temperature
     onCapabilityMeasureTemperature(inside, outside) {
 		this.log('onCapabilityMeasureTemperature');
 
-		this.log('device capability >>>> measure_temperature >>>> insidetemp:', inside);
-		this.log('device capability >>>> measure_temperature >>>> outsidetemp:', outside);
+		this.log('temperature inside °C', inside);
+		this.log('temperature outside °C:', outside);
 		this.setCapabilityValue('measure_temperature.inside', inside);
         this.setCapabilityValue('measure_temperature.outside', outside);
-=======
-		
-    // Device capability
-    onCapabilityMeasureTemperature(value, opts) {
-		this.log('onCapabilityMeasureTemperature');
-		
-		var deviceData = this.getData();
-		this.setCapabilityValue('measure_temperature', value);
-		this.log('from device capability... hometemp:', value);
-		return Promise.resolve();
-	}
-
-    // Device my_capability
-    onCapabilityMyMeasureTemperature(value, opts) {
-		this.log('onCapabilityMyMeasureTemperature');
-		
-		var deviceData = this.getData();
-		this.setCapabilityValue('my_temperature_capability', value);
-		this.log('from device my_capability... outsidetemp:', value);
-		return Promise.resolve();
->>>>>>> 503ab3f54ec3b6f1aaf2d8da0ba5eff4581228fa
 	}
 
 }

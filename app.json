@@ -191,6 +191,70 @@
       }
     ]
   },
+  "capabilities": {
+      "airco_mode": {
+          "type": "number",
+          "title": {
+              "en": "Airco mode capability",
+              "nl": "Airco modus functionaliteit"
+          },
+          "getable": true,
+          "setable": true,
+          "min": 0,
+          "max": 7,
+          "step": 1
+      },
+      "fan_rate": {
+          "type": "string",
+          "title": {
+              "en": "Airco fan rate capability",
+              "nl": "Airco ventilator snelheid functionaliteit"
+          },
+          "getable": true,
+          "setable": true
+      },
+      "fan_direction": {
+          "type": "string",
+          "title": {
+              "en": "Airco wing direction capability",
+              "nl": "Airco lamellen richting functionaliteit"
+          },
+          "getable": true,
+          "setable": true
+      },
+      "airco_humidity": {
+          "type": "number",
+          "title": {
+              "en": "Humidity capability",
+              "nl": "Luchtvochtigheid functionaliteit"
+          },
+          "getable": true,
+          "setable": true,
+          "units": {
+              "en": "%",
+              "nl": "%"
+          },
+              "min": 0,
+              "max": 100,
+              "step": 5                 
+      },
+      "airco_temperature": {
+          "type": "number",
+          "title": {
+              "en": "Set temperature capability",
+              "nl": "Instelling doel temperatuur functionaliteit"
+          },
+          "getable": true,
+          "setable": true,
+          "units": {
+              "en": "°C",
+              "nl": "°C"
+          },
+          "min": 15,
+          "max": 30,
+          "step": 0.5          
+       }
+  },          
   "drivers": [
    {
      "id": "inverter",
@@ -200,15 +264,42 @@
      },
      "class": "other",     
      "capabilities": [
-       "thermostat_mode",
-       "target_temperature",
+       "airco_mode",
+       "fan_rate",
+       "fan_direction",
+       "airco_humidity",
+       "airco_temperature",
 	   "measure_temperature.inside",
        "measure_temperature.outside" 
      ],
      "capabilitiesOptions": {
-  		"target_temperature": {
+   		"airco_mode": {
+   			"title": {
+   				"en": "Mode",
+   				"nl": "Modus"
+              }   
+          },
+   		"fan_rate": {
+   			"title": {
+   				"en": "Fan %",
+   				"nl": "Vent. %"
+              }   
+          },
+     	"fan_direction": {
+     		"title": {
+     			"en": "Fan dir.",
+     			"nl": "Vent. r"
+            }   
+        },
+     	"airco_humidity": {
+     		"title": {
+     			"en": "Set",
+     			"nl": "Doel"
+            }   
+        },
+  		"airco_temperature": {
   			"title": {
-  				"en": "Target",
+  				"en": "Set",
   				"nl": "Doel"
              }   
          },         
@@ -228,13 +319,12 @@
      "mobile": {
          "components": [
              {
-                 "id": "button",
-                 "capabilities": [ "thermostat_mode"
-                 ],
+                 "id": "sensor",
+                 "capabilities": [ "airco_mode" ],
                  "options": {
                     "showTitle": true,
                     "icons": {
-                        "thermostat_mode": "./drivers/inverter/assets/icon.svg"
+                        "airco_mode": "./drivers/inverter/assets/icon.svg"
                     }
                 }
              },
@@ -250,7 +340,7 @@
              },
              {
                "id": "thermostat",
-               "capabilities": [ "target_temperature" ]
+               "capabilities": [ "airco_temperature" ]
              }
          ]
      },
