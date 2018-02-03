@@ -75,6 +75,14 @@ class DaikinDevice extends Homey.Device {
         // humidity
 		const ahum = Number(control_info[5]);      
         this.onCapabilityAircoHum(ahum);      
+
+        // fan rate
+		const frate = String(control_info[23]);      
+        this.onCapabilityFanRate(frate);   
+        
+        // fan direction
+		const fdir = Number(control_info[34]);      
+        this.onCapabilityFanDir(fdir);           
         	
 		return Promise.resolve();
 	}
@@ -123,8 +131,8 @@ class DaikinDevice extends Homey.Device {
 	}
 
     // Capability 3: Device get/set fan direction
-    onCapabilityFanDirection(fdir) {
-		this.log('onCapabilityFanDirection');
+    onCapabilityFanDir(fdir) {
+		this.log('onCapabilityFanDir');
 
 		this.log('fan direction:', fdir);
     	this.setCapabilityValue('fan_direction', fdir);

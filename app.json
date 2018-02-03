@@ -1,7 +1,7 @@
 {
     "id": "nl.climate.daikin",
 	"version": "0.0.1",
-    "compatibility": ">=1.5.6",
+    "compatibility": ">=1.5.3",
     "sdk": 2,
     "name": {
         "en": "Daikin AC",
@@ -214,7 +214,7 @@
           "setable": true
       },
       "fan_direction": {
-          "type": "string",
+          "type": "number",
           "title": {
               "en": "Airco wing direction capability",
               "nl": "Airco lamellen richting functionaliteit"
@@ -281,14 +281,14 @@
           },
    		"fan_rate": {
    			"title": {
-   				"en": "Fan %",
-   				"nl": "Vent. %"
+   				"en": "Fan",
+   				"nl": "Vent."
               }   
           },
      	"fan_direction": {
      		"title": {
-     			"en": "Fan dir.",
-     			"nl": "Vent. r"
+     			"en": "Wings",
+     			"nl": "Lamel"
             }   
         },
      	"airco_humidity": {
@@ -305,14 +305,14 @@
          },         
  		"measure_temperature.inside": {
  			"title": {
- 				"en": "inside",
- 				"nl": "binnen"
+ 				"en": "Inside",
+ 				"nl": "Binnen"
             }   
         },
 		"measure_temperature.outside": {
 			"title": {
-				"en": "outside",
-				"nl": "buiten"
+				"en": "Outside",
+				"nl": "Buiten"
 			}
 		}
      },     
@@ -320,19 +320,24 @@
          "components": [
              {
                  "id": "sensor",
-                 "capabilities": [ "airco_mode" ],
+                 "capabilities": [
+                     "airco_mode",
+                     "fan_rate",
+                     "fan_direction"
+                  ],
                  "options": {
                     "showTitle": true,
                     "icons": {
-                        "airco_mode": "./drivers/inverter/assets/icon.svg"
+                        "airco_mode": "./drivers/inverter/assets/icon.svg",
+                        "fan_direction": "./drivers/inverter/assets/icon.svg",
+                        "fan_rate": "./drivers/inverter/assets/icon.svg"
                     }
                 }
              },
              {
                  "id": "sensor",
                  "capabilities": [
-              	   "measure_temperature.inside",
-                   "measure_temperature.outside"			
+              	   "measure_temperature.inside"			
 				 ],
                  "options": {
                     "showTitle": true
