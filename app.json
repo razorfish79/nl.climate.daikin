@@ -193,7 +193,7 @@
   },
   "capabilities": {
       "airco_mode": {
-          "type": "number",
+          "type": "enum",
           "title": {
               "en": "Airco mode capability",
               "nl": "Airco modus functionaliteit"
@@ -202,7 +202,65 @@
           "setable": true,
           "min": 0,
           "max": 7,
-          "step": 1
+          "step": 1,
+          "values": [
+            {
+              "id": "auto-0",
+              "title": {
+                "en": "Auto-0",
+                "nl": "Auto-0"
+              }
+            },
+            {
+              "id": "auto-1",
+              "title": {
+                "en": "Auto-1",
+                "nl": "Auto-1"
+              }
+            },
+            {
+              "id": "auto-7",
+              "title": {
+                "en": "Auto-7",
+                "nl": "Auto-7"
+              }
+            },            
+            {
+              "id": "dehumid",
+              "title": {
+                "en": "Dry",
+                "nl": "Ontvochtigen"
+              }
+            },
+            {
+              "id": "cooling",
+              "title": {
+                "en": "Cooling",
+                "nl": "Koelen"
+              }
+            },
+            {
+              "id": "heating",
+              "title": {
+                "en": "Heating",
+                "nl": "Verwarmen"
+              }
+            },
+            {
+              "id": "fan",
+              "title": {
+                "en": "Fan",
+                "nl": "Ventilator"
+              }
+            },
+            {
+              "id": "off",
+              "title": {
+                "en": "Off",
+                "nl": "Uit"
+              }
+            }
+         ]
       },
       "fan_rate": {
           "type": "string",
@@ -214,7 +272,7 @@
           "setable": true
       },
       "fan_direction": {
-          "type": "number",
+          "type": "string",
           "title": {
               "en": "Airco wing direction capability",
               "nl": "Airco lamellen richting functionaliteit"
@@ -275,8 +333,8 @@
      "capabilitiesOptions": {
    		"airco_mode": {
    			"title": {
-   				"en": "Mode",
-   				"nl": "Modus"
+   				"en": "Airco",
+   				"nl": "Airco"
               }   
           },
    		"fan_rate": {
@@ -319,18 +377,22 @@
      "mobile": {
          "components": [
              {
+                 "id": "picker",
+                 "capabilities": [
+                     "airco_mode"
+                  ]             
+             },
+             {
                  "id": "sensor",
                  "capabilities": [
-                     "airco_mode",
                      "fan_rate",
                      "fan_direction"
                   ],
                  "options": {
                     "showTitle": true,
                     "icons": {
-                        "airco_mode": "./drivers/inverter/assets/icon.svg",
-                        "fan_direction": "./drivers/inverter/assets/icon.svg",
-                        "fan_rate": "./drivers/inverter/assets/icon.svg"
+                        "fan_direction": "./drivers/inverter/assets/oscillation.svg",
+                        "fan_rate": "./drivers/inverter/assets/house.svg"
                     }
                 }
              },

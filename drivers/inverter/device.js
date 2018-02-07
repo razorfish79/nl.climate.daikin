@@ -3,6 +3,10 @@
 const Homey = require('homey');
 const util = require('./../../lib/daikin');
 
+var options = {'logger': console.log}; // optional logger method to get debug logging
+var Daikin = require('./../../node_modules/daikin-controller/index.js');
+var DaikinAC = require('./../../node_modules/daikin-controller/lib/DaikinAC');
+
 class DaikinDevice extends Homey.Device {
 
     // this method is called when the Device is inited
@@ -39,12 +43,108 @@ class DaikinDevice extends Homey.Device {
     }
 
 //----------------------
- 
-    // Update settings of Airconditioner
+
+    // POST new Power settings to Airconditioner    
+    daikinPowerControl(pow) {
+       this.log('daikinPowerControl');
+       
+       this.log('Power control: ', pow);
+       //daikin.setACControlInfo({"pow":pow});
+       
+    }
+
+    // POST new Mode settings to Airconditioner    
+    daikinModeControlStep1(amode) {
+       this.log('daikinModeControlStep1');
     
+       var deviceData = this.getData();     
+	   var inverter_ip = deviceData.ip;
+       
+       var mode = -1;   // initialize
+       var setpow = -1; // initialize
+       var daikin = new DaikinAC(inverter_ip, options, function(err) {
+           // will be called after successfull initialization
+         
+           // daikin.currentCommonBasicInfo - contains automatically requested basic device data
+           // daikin.currentACModelInfo - contains automatically requested device model data
+         
+         
+          /* daikin.setUpdate(1000, function(err) {
+               // method to call after each update
+               // daikin.currentACControlInfo - contains control data from device updated on defined interval
+               // daikin.currentACSensorInfo - contains sensor data from device updated on defined interval
+           });*/
+        
+        if ( amode == "auto-0" ) { mode = 0; setpow = 0; }
+                if ( amode == "auto-1" ) { mode = 1; setpow = 0; } 
+                        if ( amode == "dehumid" ) { setpow = 0; } // to change we need temp...
+                                if ( amode == "cooling" ) { mode = 3; setpow = 0; } 
+                                        if ( amode == "heating" ) { mode = 4; setpow = 1; }
+                                                if ( amode == "off" ) { setpow = 0; } 
+                                                        if ( amode == "fan" ) { setpow = 0; } // to change we need temp...
+                                                                if ( amode == "auto-7" ) { mode = 7; setpow = 0; } 
+                                   
+        daikin.setACControlInfo({"pow":setpow, "mode":mode});
+        
+       });
+    }
+    
+    daikinModeControlStep2(control_info, control_response) {
+       this.log('daikinModeControlStep2');
+    
+       var deviceData = this.getData();     
+	   var inverter_ip = deviceData.ip;
+       
+       // retrieve current settings
+       util.request_control(inverter_ip, this.daikinModeControlStep2.bind(this));       
+
+       var atemp = Number(control_info[4]);              
+       var daikin = new DaikinAC(inverter_ip, options, function(err) {
+           // will be called after successfull initialization
+         
+           // daikin.currentCommonBasicInfo - contains automatically requested basic device data
+           // daikin.currentACModelInfo - contains automatically requested device model data
+         
+         
+          /* daikin.setUpdate(1000, function(err) {
+               // method to call after each update
+               // daikin.currentACControlInfo - contains control data from device updated on defined interval
+               // daikin.currentACSensorInfo - contains sensor data from device updated on defined interval
+           });*/
+                                           
+        daikin.setACControlInfo({"targetTemperature":atemp});
+        
+       });  
+    }    
+    
+    // POST new Temperature settings to Airconditioner    
+    daikinTempControl(atemp) {
+       this.log('daikinTempControl');
+
+       var deviceData = this.getData();     
+	   var inverter_ip = deviceData.ip;        
+       var daikin = new DaikinAC(inverter_ip, options, function(err) {
+           // will be called after successfull initialization
+         
+           // daikin.currentCommonBasicInfo - contains automatically requested basic device data
+           // daikin.currentACModelInfo - contains automatically requested device model data
+         
+         
+          /* daikin.setUpdate(1000, function(err) {
+               // method to call after each update
+               // daikin.currentACControlInfo - contains control data from device updated on defined interval
+               // daikin.currentACSensorInfo - contains sensor data from device updated on defined interval
+           });*/
+      
+        daikin.setACControlInfo({"targetTemperature":atemp});
+        
+       });
+    }
+
+/*    
     //step 1 - retrieve control_info
     deviceUpdateStep1(control_info, control_response) {
-		this.log('deviceUpdateStep1');        
+		this.log('deviceUpdateStep1 - retrieve control_info');        
 
         var deviceData = this.getData();     
 		var inverter_ip = deviceData.ip; 
@@ -56,7 +156,7 @@ class DaikinDevice extends Homey.Device {
 
     //step 2 - update control_info
     deviceUpdateStep2(control_info, control_response) {
-		this.log('deviceUpdateStep2');        
+		this.log('deviceUpdateStep2 - update control_info');        
 
         var deviceData = this.getData();
 		var inverter_ip = deviceData.ip;  
@@ -67,16 +167,23 @@ class DaikinDevice extends Homey.Device {
         if ( oldDeviceState === null ) { change = 0; } // oldDeviceState === null when we initialize...    
         this.log('temp change', change);
 
-        /*var temp = util.minimize_opt(control_response);
-        this.log('minimize applied: ', temp);
+        var temp = util.minimize_opt(control_response);
         temp.stemp = (parseInt(control_response.stemp) + change).toString();
         var opts = JSON.stringify(temp); // this string is POSTed to the airco
         this.log('minimized and temp update applied, this is send to POST to the airco: ', opts);
-        util.send_control(inverter_ip, opts);
-        */
+        //util.send_control(inverter_ip, opts, this.deviceUpdateStep3.bind(this));
+        
         return Promise.resolve();
     }
 
+    //step 3 - error handling
+    deviceUpdateStep3(err, ret, responseData) {
+		this.log('deviceUpdateStep3 - error handling');
+        
+        this.log('return code: ', ret); 
+        this.log(err);   
+    }
+*/
     // Interrogate Airconditioner Status
 	deviceRequestControl(ip_address) {
 		this.log('deviceRequestControl');
@@ -102,7 +209,7 @@ class DaikinDevice extends Homey.Device {
 		this.log('updateControlListeners');
         
         // mode
-        var airco_modes = [ "AUTO-0", "AUTO-1", "DEHUMID", "COOLING", "HEATING", "-", "FAN", "AUTO-7" ];                        
+        var airco_modes = [ "auto-0", "auto-1", "dehumid", "cooling", "heating", "-", "fan", "auto-7" ];                        
         const amode = Number(control_info[2]);
         const airco_mode = airco_modes[amode];	
         this.onCapabilityMode(airco_mode);
@@ -155,6 +262,10 @@ class DaikinDevice extends Homey.Device {
 
 		this.log('mode:', amode);
     	this.setCapabilityValue('airco_mode', amode);
+        
+        this.log('amode', amode);
+        
+        this.daikinModeControlStep1(amode);
 	}
 
     // Capability 2: Device get/set fan rate
@@ -188,7 +299,8 @@ class DaikinDevice extends Homey.Device {
         this.setCapabilityValue('airco_temperature', atemp);
         this.log('temperature °C:', atemp);
         
-        this.deviceUpdateStep1();
+        this.daikinTempControl(atemp);
+
     }        
     	
     // Capability 6 & 7: Device measure in/outside temperature
