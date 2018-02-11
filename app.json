@@ -43,7 +43,7 @@
 	"flow": {
     "triggers": [
       {
-        "id": "fan_speed",
+        "id": "fan_rate",
         "title": {
           "en": "Fan speed changed",
           "nl": "Fan snelheid is wijzigd"
@@ -62,26 +62,54 @@
             "type": "dropdown",
             "values": [
               {
-                "id": "Auto",
+                "id": "A",
                 "label": {
                   "en": "Automatic",
                   "nl": "Automatisch"
                 }
               },
               {
-                "id": "Low",
+                "id": "B",
                 "label": {
-                  "en": "Lowest speed",
-                  "nl": "Laagste snelheid"
+                  "en": "Quiet",
+                  "nl": "Still"
                 }
               },
               {
-                "id": "High",
+                "id": "3",
                 "label": {
-                  "en": "Highest speed",
-                  "nl": "Hoogste snelheid"
+                  "en": "Level 1",
+                  "nl": "Niveau 1"
                 }
-              }
+              },
+              {
+                "id": "4",
+                "label": {
+                  "en": "Level 2",
+                  "nl": "Niveau 2"
+                }
+              },
+              {
+                "id": "5",
+                "label": {
+                  "en": "Level 3",
+                  "nl": "Niveau 3"
+                }
+              },                            
+              {
+                "id": "6",
+                "label": {
+                  "en": "Level 4",
+                  "nl": "Niveau 4"
+                }
+              },
+              {
+                "id": "7",
+                "label": {
+                  "en": "Level 5",
+                  "nl": "Niveau 5"
+                }
+              }               
             ]
           }
         ]
@@ -162,7 +190,7 @@
     ],
     "actions": [
       {
-        "id": "ctrl_power_on",
+        "id": "mode",
         "title": {
           "en": "Turn ON the airconditioner",
           "nl": "Zet de airconditioning AAN"
@@ -171,7 +199,7 @@
           {
             "type": "device",
             "name": "ctrl_power",
-            "filter": "driver_id=ctrl_power"
+            "filter": "driver_id=inverter"
           }
         ]
       },
@@ -185,7 +213,7 @@
           {
             "type": "device",
             "name": "ctrl_power",
-            "filter": "driver_id=ctrl_power"
+            "filter": "driver_id=inverter"
           }
         ]
       }
@@ -205,32 +233,11 @@
           "step": 1,
           "values": [
             {
-              "id": "auto-0",
-              "title": {
-                "en": "Auto-0",
-                "nl": "Auto-0"
-              }
-            },
-            {
-              "id": "auto-1",
-              "title": {
-                "en": "Auto-1",
-                "nl": "Auto-1"
-              }
-            },
-            {
-              "id": "auto-7",
-              "title": {
-                "en": "Auto-7",
-                "nl": "Auto-7"
-              }
-            },            
-            {
-              "id": "dehumid",
-              "title": {
-                "en": "Dry",
-                "nl": "Ontvochtigen"
-              }
+                "id": "off",
+                "title": {
+                  "en": "Off",
+                  "nl": "Uit"
+                }
             },
             {
               "id": "cooling",
@@ -247,6 +254,27 @@
               }
             },
             {
+              "id": "auto",
+              "title": {
+                "en": "Auto",
+                "nl": "Auto"
+              }
+            },
+            {
+              "id": "auto1",
+              "title": {
+                "en": "Auto-1",
+                "nl": "Auto-1"
+              }
+            },
+            {
+              "id": "auto2",
+              "title": {
+                "en": "Auto-2",
+                "nl": "Auto-2"
+              }
+            },
+            {
               "id": "fan",
               "title": {
                 "en": "Fan",
@@ -254,31 +282,112 @@
               }
             },
             {
-              "id": "off",
+              "id": "dehumid",
               "title": {
-                "en": "Off",
-                "nl": "Uit"
+                "en": "Dry",
+                "nl": "Ontvochtigen"
               }
             }
          ]
       },
       "fan_rate": {
-          "type": "string",
+          "type": "enum",
           "title": {
               "en": "Airco fan rate capability",
               "nl": "Airco ventilator snelheid functionaliteit"
           },
           "getable": true,
-          "setable": true
+          "setable": true,
+          "values": [
+            {
+              "id": "A",
+              "title": {
+                "en": "Auto",
+                "nl": "Auto"
+              }
+            },
+            {
+              "id": "B",
+              "title": {
+                "en": "Quiet",
+                "nl": "Still"
+              }
+            },
+            {
+              "id": "3",
+              "title": {
+                "en": "Level 1",
+                "nl": "Niveau 1"
+              }
+            },            
+            {
+              "id": "4",
+              "title": {
+                "en": "Level 2",
+                "nl": "Niveau 2"
+              }
+            },
+            {
+              "id": "5",
+              "title": {
+                "en": "Level 3",
+                "nl": "Niveau 3"
+              }
+            },
+            {
+              "id": "6",
+              "title": {
+                "en": "Level 4",
+                "nl": "Niveau 4"
+              }
+            },
+            {
+              "id": "7",
+              "title": {
+                "en": "Level 5",
+                "nl": "Niveau 5"
+              }
+            }
+         ]
       },
       "fan_direction": {
-          "type": "string",
+          "type": "enum",
           "title": {
               "en": "Airco wing direction capability",
               "nl": "Airco lamellen richting functionaliteit"
           },
           "getable": true,
-          "setable": true
+          "setable": true,
+          "values": [
+            {
+              "id": "0",
+              "title": {
+                "en": "Stop",
+                "nl": "Stop"
+              }
+            },
+            {
+              "id": "1",
+              "title": {
+                "en": "Vertical",
+                "nl": "Vertikaal"
+              }
+            },
+            {
+              "id": "2",
+              "title": {
+                "en": "Horizontal",
+                "nl": "Horizontaal"
+              }
+            },            
+            {
+              "id": "3",
+              "title": {
+                "en": "3D",
+                "nl": "3D"
+              }
+            }
+         ]
       },
       "airco_humidity": {
           "type": "number",
