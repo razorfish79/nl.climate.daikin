@@ -2,18 +2,18 @@
 
 const Homey = require('homey');
 const util = require('./../../lib/daikin');
+const Device = require('../../lib/device');
 
 var options = {'logger': console.log}; // optional logger method to get debug logging
 var Daikin = require('./../../node_modules/daikin-controller/index.js');
 var DaikinAC = require('./../../node_modules/daikin-controller/lib/DaikinAC');
 
-class DaikinDevice extends Homey.Device {
+class DaikinDevice extends Device {
 
     // this method is called when the Device is inited
     onInit() {						
-        
-		this.log('name:', this.getName());
-        this.log('class:', this.getClass());
+
+		super.onInit();
 
 		this.log('Capability registration started...');
         this.registerCapabilityListener('airco_mode', this.onCapabilityMode.bind(this));
@@ -130,9 +130,9 @@ class DaikinDevice extends Homey.Device {
            }
            // power, mode, targettemperature and targethumidity are mandatory parameters for mode changes!
            daikin.setACControlInfo({"power":setpow, "mode":amode, "targetTemperature":atemp, "targetHumidity":shum});
-
-      });
-
+       
+       });
+       
     }  
 
     // POST new Fan Rate settings to Airconditioner    
@@ -208,12 +208,35 @@ class DaikinDevice extends Homey.Device {
        this.log('daikinTempControl');
 
        var deviceData = this.getData();     
-	   var inverter_ip = deviceData.ip;        
+	   var inverter_ip = deviceData.ip;
+              
        var daikin = new DaikinAC(inverter_ip, options, function(err) {
-      
-        daikin.setACControlInfo({"targetTemperature":atemp});
-        
+         daikin.setACControlInfo({"targetTemperature":atemp});
        });
+
+       // flowcard
+   	   var oldTargetTemperature = this.getState().airco_temperature;
+           this.log('oldTargetTemperature: ', oldTargetTemperature);
+   	   if (oldTargetTemperature != atemp) {
+   		   this.setCapabilityValue('airco_temperature', atemp);
+           this.log('set new target temperature °C to:', atemp);
+
+   		   let device = this;
+   		   let tokens = {
+   			   'target_temperature': atemp
+   		   };
+
+   		   let state  = {
+   			   'airco_temperature': atemp
+   		   }
+
+   		   //trigger temperature flows
+   		   let driver = this.getDriver();
+   		   driver
+   				.triggerTemperatureMoreThan(device, tokens, state)
+   				.triggerTemperatureLessThan(device, tokens, state)
+   				.triggerTemperatureBetween(device, tokens, state);
+   		}
     }
 
     // Interrogate Airconditioner Status
@@ -263,14 +286,16 @@ class DaikinDevice extends Homey.Device {
         if (frate == "A") { frate_nbr = 0; }
         if (frate == "B") { frate_nbr = 1; } 
         if ( frate_nbr !=0 && frate_nbr != 1 ) { frate_nbr = parseInt(frate - 1); }
-        const fan_rate = fan_rates[frate_nbr];           
+        const fan_rate = fan_rates[frate_nbr];
+        this.log('frate:', fan_rate);            
     	this.setCapabilityValue('fan_rate', fan_rate);
             
     //---- fan direction
         var fan_directions = [ "0", "1", "2", "3" ];
 		const fdir = Number(control_info[24]);      
         const fan_direction = fan_directions[fdir];             
-    	this.setCapabilityValue('fan_direction', fan_direction);                 	
+    	this.setCapabilityValue('fan_direction', fan_direction);
+        this.log('fdir:', fan_direction);                 	
 		return Promise.resolve();
 	}
 
@@ -281,8 +306,10 @@ class DaikinDevice extends Homey.Device {
 		const inside = Number(sensor_info[1]);
 		const outside = Number(sensor_info[3]);
 		this.setCapabilityValue('measure_temperature.inside', inside);
-        this.setCapabilityValue('measure_temperature.outside', outside);       		
-			
+        this.log('Temp inside:', inside);     
+        this.setCapabilityValue('measure_temperature.outside', outside);
+        this.log('Temp outside:', outside);            		
+		
 		return Promise.resolve();
 	}
 
@@ -331,9 +358,9 @@ class DaikinDevice extends Homey.Device {
     onCapabilityAircoTemp(atemp) {
 		this.log('onCapabilityAircoTemp');
 
-        this.log('temperature °C:', atemp);
-        this.setCapabilityValue('airco_temperature', atemp);
-        
+        this.log('new target temperature °C:', atemp);
+        //this.setCapabilityValue('airco_temperature', atemp); // is done in flowcard logic!!!
+
         this.daikinTempControl(atemp);
 
     }        
@@ -343,19 +370,11 @@ class DaikinDevice extends Homey.Device {
 		this.log('onCapabilityMeasureTemperature');
 
         // updates by interrogation of airco, refer to refreshData function.
-        
+
+		return Promise.resolve();      
 	}
 
 //----------------------
-
-	triggerFlow(trigger, device, tokens, state) {
-		if (trigger) {
-			trigger
-				.trigger(device, tokens, state)
-				.then(this.log)
-				.catch(this.error);
-		}
-	}
 
 }
 

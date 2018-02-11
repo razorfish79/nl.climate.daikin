@@ -113,14 +113,227 @@
             ]
           }
         ]
+      },
+      {
+          "id": "change_inside_temperature_more_than",
+          "title": {
+              "en": "The inside temperature is more than",
+              "nl": "De binnentemperatuur is meer dan"
+          },
+          "args": [
+              {
+                  "name": "device",
+                  "type": "device"
+              },
+              {
+                  "name": "temperature",
+                  "type": "number",
+                  "placeholder": {
+                      "en": "in C",
+                      "nl": "in C"
+                  }
+              }
+          ]
+      },
+      {
+          "id": "change_inside_temperature_less_than",
+          "title": {
+              "en": "The inside temperature is less than",
+              "nl": "De binnentemperatuur is minder dan"
+          },
+          "args": [
+              {
+                  "name": "device",
+                  "type": "device"
+              },
+              {
+                  "name": "temperature",
+                  "type": "number",
+                  "placeholder": {
+                      "en": "in C",
+                      "nl": "in C"
+                  }
+              }
+          ]
+      },
+      {
+          "id": "change_inside_temperature_between",
+          "title": {
+              "en": "The inside temperature is between",
+              "nl": "De binnentemperatuur is tussen"
+          },
+          "args": [
+              {
+                  "name": "device",
+                  "type": "device"
+              },
+              {
+                  "name": "temperature_from",
+                  "type": "number",
+                  "placeholder": {
+                      "en": "in C",
+                      "nl": "in C"
+                  }
+              },
+                                  {
+                  "name": "temperature_to",
+                  "type": "number",
+                  "placeholder": {
+                      "en": "in C",
+                      "nl": "in C"
+                  }
+              }
+          ]
+      },
+      {
+          "id": "change_outside_temperature_more_than",
+          "title": {
+              "en": "The outside temperature is more than",
+              "nl": "De buitentemperatuur is meer dan"
+          },
+          "args": [
+              {
+                  "name": "device",
+                  "type": "device"
+              },
+              {
+                  "name": "temperature",
+                  "type": "number",
+                  "placeholder": {
+                      "en": "in C",
+                      "nl": "in C"
+                  }
+              }
+          ]
+      },
+      {
+          "id": "change_outside_temperature_less_than",
+          "title": {
+              "en": "The outside temperature is less than",
+              "nl": "De buitentemperatuur is minder dan"
+          },
+          "args": [
+              {
+                  "name": "device",
+                  "type": "device"
+              },
+              {
+                  "name": "temperature",
+                  "type": "number",
+                  "placeholder": {
+                      "en": "in C",
+                      "nl": "in C"
+                  }
+              }
+          ]
+      },
+      {
+          "id": "change_outside_temperature_between",
+          "title": {
+              "en": "The outside temperature is between",
+              "nl": "De buitentemperatuur is tussen"
+          },
+          "args": [
+              {
+                  "name": "device",
+                  "type": "device"
+              },
+              {
+                  "name": "temperature_from",
+                  "type": "number",
+                  "placeholder": {
+                      "en": "in C",
+                      "nl": "in C"
+                  }
+              },
+                                  {
+                  "name": "temperature_to",
+                  "type": "number",
+                  "placeholder": {
+                      "en": "in C",
+                      "nl": "in C"
+                  }
+              }
+          ]
+      },
+      {
+          "id": "change_target_temperature_more_than",
+          "title": {
+              "en": "The target temperature is more than",
+              "nl": "De doeltemperatuur is meer dan"
+          },
+          "args": [
+              {
+                  "name": "device",
+                  "type": "device"
+              },
+              {
+                  "name": "target_temperature",
+                  "type": "number",
+                  "placeholder": {
+                      "en": "in C",
+                      "nl": "in C"
+                  }
+              }
+          ]
+      },
+      {
+          "id": "change_target_temperature_less_than",
+          "title": {
+              "en": "The target temperature is less than",
+              "nl": "De doeltemperatuur is minder dan"
+          },
+          "args": [
+              {
+                  "name": "device",
+                  "type": "device"
+              },
+              {
+                  "name": "target_temperature",
+                  "type": "number",
+                  "placeholder": {
+                      "en": "in C",
+                      "nl": "in C"
+                  }
+              }
+          ]
+      },
+      {
+          "id": "change_target_temperature_between",
+          "title": {
+              "en": "The target temperature is between",
+              "nl": "De doeltemperatuur is tussen"
+          },
+          "args": [
+              {
+                  "name": "device",
+                  "type": "device"
+              },
+              {
+                  "name": "target_temperature_from",
+                  "type": "number",
+                  "placeholder": {
+                      "en": "in C",
+                      "nl": "in C"
+                  }
+              },
+                                  {
+                  "name": "target_temperature_to",
+                  "type": "number",
+                  "placeholder": {
+                      "en": "in C",
+                      "nl": "in C"
+                  }
+              }
+          ]
       }
     ],
     "conditions": [
         {
-            "id": "has_temperature_more_than",
+            "id": "has_inside_temperature_more_than",
             "title": {
-                "en": "The temperature !{{is|isn't}} more than",
-                "nl": "De temperatuur !{{is|is niet}} meer dan"
+                "en": "The inside temperature !{{is|isn't}} more than",
+                "nl": "De binnentemperatuur !{{is|is niet}} meer dan"
             },
             "args": [
                 {
@@ -138,10 +351,10 @@
             ]
         },
         {
-            "id": "has_temperature_less_than",
+            "id": "has_inside_temperature_less_than",
             "title": {
-                "en": "The temperature !{{is|isn't}} less than",
-                "nl": "De temperatuur !{{is|is niet}} minder dan"
+                "en": "The inside temperature !{{is|isn't}} less than",
+                "nl": "De binnentemperatuur !{{is|is niet}} minder dan"
             },
             "args": [
                 {
@@ -159,10 +372,10 @@
             ]
         },
         {
-            "id": "has_temperature_between",
+            "id": "has_inside_temperature_between",
             "title": {
-                "en": "The temperature !{{is|isn't}} between",
-                "nl": "De temperatuur !{{is|is niet}} tussen"
+                "en": "The inside temperature !{{is|isn't}} between",
+                "nl": "De binnentemperatuur !{{is|is niet}} tussen"
             },
             "args": [
                 {
@@ -186,6 +399,361 @@
                     }
                 }
             ]
+        },
+        {
+            "id": "has_outside_temperature_more_than",
+            "title": {
+                "en": "The outside temperature !{{is|isn't}} more than",
+                "nl": "De buitentemperatuur !{{is|is niet}} meer dan"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device"
+                },
+                {
+                    "name": "temperature",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "has_outside_temperature_less_than",
+            "title": {
+                "en": "The outside temperature !{{is|isn't}} less than",
+                "nl": "De buitentemperatuur !{{is|is niet}} minder dan"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device"
+                },
+                {
+                    "name": "temperature",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "has_outside_temperature_between",
+            "title": {
+                "en": "The outside temperature !{{is|isn't}} between",
+                "nl": "De buitentemperatuur !{{is|is niet}} tussen"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device"
+                },
+                {
+                    "name": "temperature_from",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                },
+                                    {
+                    "name": "temperature_to",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "has_target_temperature_more_than",
+            "title": {
+                "en": "The target temperature !{{is|isn't}} more than",
+                "nl": "De doeltemperatuur !{{is|is niet}} meer dan"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device"
+                },
+                {
+                    "name": "temperature",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "has_target_temperature_less_than",
+            "title": {
+                "en": "The target temperature !{{is|isn't}} less than",
+                "nl": "De doeltemperatuur !{{is|is niet}} minder dan"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device"
+                },
+                {
+                    "name": "temperature",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "has_target_temperature_between",
+            "title": {
+                "en": "The target temperature !{{is|isn't}} between",
+                "nl": "De doeltemperatuur !{{is|is niet}} tussen"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device"
+                },
+                {
+                    "name": "temperature_from",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                },
+                                    {
+                    "name": "temperature_to",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "change_inside_temperature_more_than",
+            "title": {
+                "en": "The inside temperature is more than",
+                "nl": "De binnentemperatuur is meer dan"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device"
+                },
+                {
+                    "name": "temperature",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "change_inside_temperature_less_than",
+            "title": {
+                "en": "The inside temperature is less than",
+                "nl": "De binnentemperatuur is minder dan"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device"
+                },
+                {
+                    "name": "temperature",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "change_inside_temperature_between",
+            "title": {
+                "en": "The inside temperature is between",
+                "nl": "De binnentemperatuur is tussen"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device"
+                },
+                {
+                    "name": "temperature_from",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                },
+                                    {
+                    "name": "temperature_to",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "change_outside_temperature_more_than",
+            "title": {
+                "en": "The outside temperature is more than",
+                "nl": "De buitentemperatuur is meer dan"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device"
+                },
+                {
+                    "name": "temperature",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "change_outside_temperature_less_than",
+            "title": {
+                "en": "The outside temperature is less than",
+                "nl": "De buitentemperatuur is minder dan"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device"
+                },
+                {
+                    "name": "temperature",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "change_outside_temperature_between",
+            "title": {
+                "en": "The outside temperature is between",
+                "nl": "De buitentemperatuur is tussen"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device"
+                },
+                {
+                    "name": "temperature_from",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                },
+                                    {
+                    "name": "temperature_to",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "change_target_temperature_more_than",
+            "title": {
+                "en": "The target temperature is more than",
+                "nl": "De doeltemperatuur is meer dan"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device"
+                },
+                {
+                    "name": "target_temperature",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "change_target_temperature_less_than",
+            "title": {
+                "en": "The target temperature is less than",
+                "nl": "De doeltemperatuur is minder dan"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device"
+                },
+                {
+                    "name": "target_temperature",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "change_target_temperature_between",
+            "title": {
+                "en": "The target temperature is between",
+                "nl": "De doeltemperatuur is tussen"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device"
+                },
+                {
+                    "name": "target_temperature_from",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                },
+                                    {
+                    "name": "target_temperature_to",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
         }
     ],
     "actions": [
@@ -198,13 +766,13 @@
         "args": [
           {
             "type": "device",
-            "name": "ctrl_power",
+            "name": "auto",
             "filter": "driver_id=inverter"
           }
         ]
       },
       {
-        "id": "ctrl_power_off",
+        "id": "mode",
         "title": {
           "en": "Turn OFF the airconditioner",
           "nl": "Zet de airconditioning UIT"
@@ -212,7 +780,7 @@
         "args": [
           {
             "type": "device",
-            "name": "ctrl_power",
+            "name": "off",
             "filter": "driver_id=inverter"
           }
         ]
@@ -418,7 +986,7 @@
               "nl": "°C"
           },
           "min": 15,
-          "max": 30,
+          "max": 35.0,
           "step": 0.5          
        }
   },          
@@ -504,15 +1072,6 @@
                         "fan_rate": "./drivers/inverter/assets/house.svg"
                     }
                 }
-             },
-             {
-                 "id": "sensor",
-                 "capabilities": [
-              	   "measure_temperature.inside"			
-				 ],
-                 "options": {
-                    "showTitle": true
-                 }
              },
              {
                "id": "thermostat",
