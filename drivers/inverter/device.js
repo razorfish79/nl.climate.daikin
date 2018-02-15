@@ -1,16 +1,16 @@
 "use strict";
 
 const Homey = require('homey');
-const util = require('./../../lib/daikin');
+const util = require('../../lib/daikin');
 const Device = require('../../lib/device');
 
 var options = {'logger': console.log}; // optional logger method to get debug logging
-var Daikin = require('./../../node_modules/daikin-controller/index.js');
-var DaikinAC = require('./../../node_modules/daikin-controller/lib/DaikinAC');
+var Daikin = require('../../node_modules/daikin-controller/index.js');
+var DaikinAC = require('../../node_modules/daikin-controller/lib/DaikinAC');
 
-class DaikinDevice extends Device {
+//Device for a Daikin Inverter device
+class InverterDevice extends Device {
 
-    // this method is called when the Device is inited
     onInit() {						
 
 		super.onInit();
@@ -86,7 +86,7 @@ class DaikinDevice extends Device {
           // daikin.currentACModelInfo - contains automatically requested device model data           
           // modified DaikinAC,js so that currentACControlInfo is sent iso currentACModelInfo                     
            switch (airco_mode) { 
-               case "off":            var amode = 5; var setpow = false;
+              case "off":             var amode = 5; var setpow = false;
                                       break;
               
               case "cooling":         var amode = 3; var setpow = false;          
@@ -208,35 +208,11 @@ class DaikinDevice extends Device {
        this.log('daikinTempControl');
 
        var deviceData = this.getData();     
-	   var inverter_ip = deviceData.ip;
-              
+ 	   var inverter_ip = deviceData.ip;             
        var daikin = new DaikinAC(inverter_ip, options, function(err) {
          daikin.setACControlInfo({"targetTemperature":atemp});
        });
 
-       // flowcard
-   	   var oldTargetTemperature = this.getState().airco_temperature;
-           this.log('oldTargetTemperature: ', oldTargetTemperature);
-   	   if (oldTargetTemperature != atemp) {
-   		   this.setCapabilityValue('airco_temperature', atemp);
-           this.log('set new target temperature °C to:', atemp);
-
-   		   let device = this;
-   		   let tokens = {
-   			   'target_temperature': atemp
-   		   };
-
-   		   let state  = {
-   			   'airco_temperature': atemp
-   		   }
-
-   		   //trigger temperature flows
-   		   let driver = this.getDriver();
-   		   driver
-   				.triggerTemperatureMoreThan(device, tokens, state)
-   				.triggerTemperatureLessThan(device, tokens, state)
-   				.triggerTemperatureBetween(device, tokens, state);
-   		}
     }
 
     // Interrogate Airconditioner Status
@@ -323,6 +299,8 @@ class DaikinDevice extends Device {
     	this.setCapabilityValue('airco_mode', airco_mode);
         
         this.daikinModeControl(airco_mode);
+
+		return Promise.resolve();  
 	}
     
 //-------
@@ -334,6 +312,8 @@ class DaikinDevice extends Device {
     	this.setCapabilityValue('fan_rate', fan_rate);
         
         this.daikinFanRateControl(fan_rate);
+
+		return Promise.resolve();  
 	}
 //-------
     // Capability 3: Device get/set fan direction
@@ -344,6 +324,8 @@ class DaikinDevice extends Device {
     	this.setCapabilityValue('fan_direction', fan_direction);
         
         this.daikinFanDirControl(fan_direction);
+
+		return Promise.resolve();  
 	}
 //-------
     // Capability 4: Device get/set humidity
@@ -352,21 +334,47 @@ class DaikinDevice extends Device {
 
 		this.log('humidity %:', ahum);
     	this.setCapabilityValue('airco_humidity', ahum);
+        
+        return Promise.resolve();  
 	}
 //-------        
     // Capability 5: Device get/set target temperature
-    onCapabilityAircoTemp(atemp) {
+    onCapabilityAircoTemp(atemp, opts) {
 		this.log('onCapabilityAircoTemp');
 
-        this.log('new target temperature °C:', atemp);
-        //this.setCapabilityValue('airco_temperature', atemp); // is done in flowcard logic!!!
-
-        this.daikinTempControl(atemp);
-
+ 	    var oldTargetTemperature = this.getState().airco_temperature;
+        this.log('oldTargetTemperature: ', oldTargetTemperature);
+ 	    
+        if (oldTargetTemperature != atemp) {
+           this.log('new target airco temperature °C:', atemp);        
+ 	   	   this.setCapabilityValue('airco_temperature', atemp);
+       
+ 	   	   let device = this;
+ 	   	   let tokens = {
+ 	   		   'target_temperature': atemp
+ 	   	   };
+       
+ 	   	   let state  = {
+ 	   		   'airco_temperature': atemp
+ 	   	   }
+       
+ 	   	   // trigger temperature flows
+ 	   	   let driver = this.getDriver();
+ 	   	   driver
+ 	   			.triggerTemperatureMoreThan(device, tokens, state)
+ 	   			.triggerTemperatureLessThan(device, tokens, state)
+ 	   			.triggerTemperatureBetween(device, tokens, state);
+           
+           // update the airco its settings         
+           this.daikinTempControl(atemp);
+ 	   	}
+       
+		return Promise.resolve(); 
+        
     }        
 //-------    	
     // Capability 6 & 7: Device measure in/outside temperature    
-   onCapabilityMeasureTemperature(inside, outside) {
+    onCapabilityMeasureTemperature(inside, outside) {
 		this.log('onCapabilityMeasureTemperature');
 
         // updates by interrogation of airco, refer to refreshData function.
@@ -378,4 +386,4 @@ class DaikinDevice extends Device {
 
 }
 
-module.exports = DaikinDevice;
+module.exports = InverterDevice;
