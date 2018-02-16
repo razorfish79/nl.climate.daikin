@@ -15,6 +15,10 @@
         "appliances",
         "climate"
     ],
+    "tags": {
+           "en": [ "daikin", "emura", "nextura", "inverter", "airconditioner", "airconditioning" ],
+           "nl": [ "daikin", "emura", "nextura", "inverter", "airconditioner", "airconditioning" ]
+     },
     "images": {
       "large": "/assets/images/large.png",
       "small": "/assets/images/small.png"
@@ -156,7 +160,107 @@
      	   	  ]
      	   }
         ]
-      }
+      },
+      {
+        "id": "change_fan_rate",
+        "title": {
+          "en": "Select a fan rate",
+          "nl": "Kies een ventilator snelheid"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=inverter"
+          },
+     	  {
+     	  	"name": "frate",
+     	  	"type": "dropdown",
+     	  	"values": [ 
+     	  		 { "id": "A", 
+     	  			"label": { "en": "Auto", "nl": "Auto" } 
+     	  		 },
+     	  		 { "id": "B", 
+     	  			"label": { "en": "Quiet", "nl": "Stil" } 
+     	  		 },
+     	  		 { "id": "3", 
+     	  			"label": { "en": "Level 1", "nl": "Niveau 1" } 
+     	  		 },
+     	  		 { "id": "4", 
+     	  			"label": { "en": "Level 2", "nl": "Niveau 2" } 
+     	  		 },
+     	  		 { "id": "5", 
+     	  			"label": { "en": "Level 3", "nl": "Niveau 3" } 
+     	  		 },
+     	  		 { "id": "6", 
+     	  			"label": { "en": "Level 4", "nl": "Niveau 4" } 
+     	  		 },
+     	  		 { "id": "7", 
+     	  			"label": { "en": "Level 5", "nl": "Niveau 5" } 
+     	  		 }
+     	   	  ]
+     	   }
+
+         ]
+      },
+      {
+        "id": "change_fan_direction",
+        "title": {
+          "en": "Select sweep",
+          "nl": "Kies lamellen richting"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=inverter"
+          },
+     	  {
+     	  	"name": "fdir",
+     	  	"type": "dropdown",
+     	  	"values": [ 
+     	  		 { "id": "0", 
+     	  			"label": { "en": "Stop", "nl": "Stop" } 
+     	  		 },
+     	  		 { "id": "1", 
+     	  			"label": { "en": "Vertical", "nl": "Vertikaal" } 
+     	  		 },
+     	  		 { "id": "2", 
+     	  			"label": { "en": "Horizontal", "nl": "Horizontaal" } 
+     	  		 },
+     	  		 { "id": "3", 
+     	  			"label": { "en": "3D", "nl": "3D" } 
+     	  		 }
+     	   	  ]
+     	   }
+
+         ]
+      },
+      {
+        "id": "change_target_temp",
+        "title": {
+            "en": "Change target temperature",
+            "nl": "Wijzig doel temperatuur"
+        },
+       	"args": [
+       	   {
+       		  "name": "device",
+       		  "type": "device",
+       		  "filter": "driver_id=inverter"
+       	    },
+       	    {
+              "name": "atemp",
+              "type": "number",
+              "min": "15",
+              "max": "35",
+              "placeholder" :
+            {
+               "en": "°C",
+               "nl": "°C"
+            }
+       	  }
+		]
+      }      
     ]
   },
   "capabilities": {
@@ -250,7 +354,7 @@
               "id": "B",
               "title": {
                 "en": "Quiet",
-                "nl": "Still"
+                "nl": "Stil"
               }
             },
             {
@@ -293,7 +397,7 @@
       "fan_direction": {
           "type": "enum",
           "title": {
-              "en": "Airco wing direction capability",
+              "en": "Airco swing direction capability",
               "nl": "Airco lamellen richting functionaliteit"
           },
           "getable": true,

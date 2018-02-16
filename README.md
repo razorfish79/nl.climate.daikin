@@ -5,13 +5,12 @@ Do not use the MASTER branch for now, what is available in the development branc
 Adds support for Daikin Airconditioners.
 
 # Current useability status:
-* "USELESS": app only shows some basic sensor info like in/outside temperature, target temperature, airco mode, fan rate and wing mode.
+* can be used for testing flows, familiarization etc. the airco is however always powered of to be safe.
 
 # To-do (in random order)
-* make it possible to change settings
-* add flow cards
+* add more flow cards
 * improve and extend "error handling"
-* differentiate capabilities by model
+* differentiate capabilities by model (inverter, emura, nexura)
 
 # Development history
 * 31-JAN-18: inside / outside / target temperature (fixed value for now) show on mobile card.
@@ -22,6 +21,9 @@ Adds support for Daikin Airconditioners.
 * 11-FEB-18: 1/ Implemented the Apollon77 library. Note: for testing/troubleshooting purposes the airco power is always set to OFF.
 * 11-FEB-18: 2/ Working on flow cards... not functional!
 * 15-FEB-18: Added a trigger, condition and action flowcard.
+* 16-FEB-18: 1/ Action triggers to set the: Airco Operation Mode, Fan rate, Fan direction and Target temperature.
+* 16-FEB-18: 2/ Several code optimizations
+* 16-FEB-18: 3/ Asset updates, now passes the Homey App Store validation cli  
 
 # Note: for testing/troubleshooting purposes the airco power is always set to OFF.
 

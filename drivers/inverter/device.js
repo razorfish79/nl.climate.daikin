@@ -4,10 +4,6 @@ const Homey = require('homey');
 const util = require('../../lib/daikin');
 const Device = require('../../lib/device');
 
-var options = {'logger': console.log}; // optional logger method to get debug logging
-var Daikin = require('../../node_modules/daikin-controller/index.js');
-var DaikinAC = require('../../node_modules/daikin-controller/lib/DaikinAC');
-
 //Device for a Daikin Inverter device
 class InverterDevice extends Device {
 
@@ -26,15 +22,16 @@ class InverterDevice extends Device {
                 
 		this.log('Registration of Capabilities and Report Listeners completed!');
         
-        // for documentation about the Daikin API look at https://github.com/Apollon77/daikin-controller and
+        // for documentation about the Daikin API look at https://github.com/Apollon77/daikin-controller and at
         // https://github.com/Apollon77/daikin-controller
+
+        this.refreshData(); // refresh every x-seconds the Homey app with data retrieved from the airco...
 
     }
 		
 	onAdded() {
 		this.log('device added');
 
-        this.refreshData(); // we intialize our Homey app with data from the airco...
 	}
 
     // this method is called when the Device is deleted
@@ -42,6 +39,100 @@ class InverterDevice extends Device {
         this.log('device deleted');
 		
     }
+
+//-------- app capabilities --------------
+    	
+    // Capability 1: Device get/set mode
+    onCapabilityMode(airco_mode) {
+		this.log('onCapabilityMode');
+
+		this.log('mode:', airco_mode);
+    	this.setCapabilityValue('airco_mode', airco_mode);
+        
+        this.daikinModeControl(airco_mode);
+
+		return Promise.resolve();  
+	}
+    
+    // Capability 2: Device get/set fan rate
+    onCapabilityFanRate(fan_rate) {
+		this.log('onCapabilityFanRate');
+
+		this.log('fan rate:', fan_rate);
+    	this.setCapabilityValue('fan_rate', fan_rate);
+        
+        this.daikinFanRateControl(fan_rate);
+
+		return Promise.resolve();  
+	}
+
+    // Capability 3: Device get/set fan direction
+    onCapabilityFanDir(fan_direction) {
+		this.log('onCapabilityFanDir');
+
+		this.log('fan direction:', fan_direction);
+    	this.setCapabilityValue('fan_direction', fan_direction);
+        
+        this.daikinFanDirControl(fan_direction);
+
+		return Promise.resolve();  
+	}
+
+    // Capability 4: Device get/set humidity
+    onCapabilityAircoHum(ahum) {
+		this.log('onCapabilityAircoHum');
+
+		this.log('humidity %:', ahum);
+    	this.setCapabilityValue('airco_humidity', ahum);
+        
+        return Promise.resolve();  
+	}
+      
+    // Capability 5: Device get/set target temperature
+    onCapabilityAircoTemp(atemp, opts) {
+		this.log('onCapabilityAircoTemp');
+
+ 	    var oldTargetTemperature = this.getState().airco_temperature;
+        this.log('oldTargetTemperature: ', oldTargetTemperature);
+ 	    
+        if (oldTargetTemperature != atemp) {
+           this.log('new target airco temperature °C:', atemp);        
+ 	   	   this.setCapabilityValue('airco_temperature', atemp);
+       
+ 	   	   let device = this;
+ 	   	   let tokens = {
+ 	   		   'target_temperature': atemp
+ 	   	   };
+       
+ 	   	   let state  = {
+ 	   		   'airco_temperature': atemp
+ 	   	   }
+       
+ 	   	   // trigger temperature flows
+ 	   	   let driver = this.getDriver();
+ 	   	   driver
+ 	   			.triggerTemperatureMoreThan(device, tokens, state)
+ 	   			.triggerTemperatureLessThan(device, tokens, state)
+ 	   			.triggerTemperatureBetween(device, tokens, state);
+           
+           // update the airco its settings         
+           this.daikinTempControl(atemp);
+ 	   	}
+       
+		return Promise.resolve(); 
+        
+    }        
+   	
+    // Capability 6 & 7: Device measure in/outside temperature    
+    onCapabilityMeasureTemperature(inside, outside) {
+		this.log('onCapabilityMeasureTemperature');
+
+        // updates by interrogation of airco, refer to refreshData function.
+
+		return Promise.resolve();      
+	}
+
+//-------- airco data retrieval and app refresh/update methods --------------
 
     // look for changes in the airco its settings made outside of Homey app...
     refreshData() {
@@ -56,163 +147,6 @@ class InverterDevice extends Device {
         var interval = 10; // in seconds      
         setTimeout(this.refreshData.bind(this), interval * 1000);
         
-    }
-
-//----------------------
-
-    // POST new Power settings to Airconditioner    
-    daikinPowerControl(pow) {
-       this.log('daikinPowerControl');
-
-	   var deviceData = this.getData();
-       var inverter_ip = deviceData.ip;
-              
-       var daikin = new DaikinAC(inverter_ip, options, function(err) {
-
-           daikin.setACControlInfo({"pow":pow});           
-       });
-       this.log('Power control: ', pow);      
-    }
-
-    // POST new Mode settings to Airconditioner    
-    daikinModeControl(airco_mode) {
-       this.log('daikinModeControl');
-    
-       var deviceData = this.getData();     
-	   var inverter_ip = deviceData.ip;
-       
-       var daikin = new DaikinAC(inverter_ip, options, function(err) {
-          // daikin.currentCommonBasicInfo - contains automatically requested basic device data
-          // daikin.currentACModelInfo - contains automatically requested device model data           
-          // modified DaikinAC,js so that currentACControlInfo is sent iso currentACModelInfo                     
-           switch (airco_mode) { 
-              case "off":             var amode = 5; var setpow = false;
-                                      break;
-              
-              case "cooling":         var amode = 3; var setpow = false;          
-                                      break;
-                                                        
-              case "heating":         var amode = 4; var setpow = false;  
-                                      break;
-                                                                      
-              case "auto":            var amode = 0; var setpow = false; 
-                                      break;
-                                                        
-              case "auto1":           var amode = 1; var setpow = false;    
-                                      break;
-                                                        
-              case "auto2":           var amode = 7; var setpow = false;  
-                                      break;
-                                                        
-              case "dehumid":         var amode = 2; var setpow = false;
-                                      break;
-                                                        
-              case "fan":             var amode = 6; var setpow = false;
-                                      break;
-                                                        
-             default:                 return; // unrecognized mode
-           }
-           // dehumid and fan mode have no temperature setting assigned, however
-           // we must make sure a target temperature is set when we change back to another mode
-           var atemp = 21; // just in case targetTemperatureMode1 is not set between 10 - 45 degC
-           if (daikin.currentACControlInfo.targetTemperatureMode1 >= 10 && daikin.currentACControlInfo.targetTemperatureMode1 <= 45) { 
-               atemp = daikin.currentACControlInfo.targetTemperatureMode1;
-           }           
-           if (daikin.currentACControlInfo.targetTemperature >= 10 && daikin.currentACControlInfo.targetTemperature <= 45) { 
-               atemp = daikin.currentACControlInfo.targetTemperature;
-           }           
-           var shum = 0; // just in case targetHumidityMode1 is not set between 0 - 50 %
-           if (daikin.currentACControlInfo.targetHumidityMode1 >= 0 && daikin.currentACControlInfo.targetHumidityMode1 <= 50) {
-               shum = daikin.currentACControlInfo.targetHumidityMode1; 
-           }           
-           if (daikin.currentACControlInfo.targetHumidity >= 0 && daikin.currentACControlInfo.targetHumidity <= 50) {
-               shum = daikin.currentACControlInfo.targetHumidity; 
-           }
-           // power, mode, targettemperature and targethumidity are mandatory parameters for mode changes!
-           daikin.setACControlInfo({"power":setpow, "mode":amode, "targetTemperature":atemp, "targetHumidity":shum});
-       
-       });
-       
-    }  
-
-    // POST new Fan Rate settings to Airconditioner    
-    daikinFanRateControl(fan_rate) {
-       this.log('daikinFanRateControl');
-    
-       var deviceData = this.getData();     
-	   var inverter_ip = deviceData.ip;
-       
-       var fanRate = fan_rate;
-       var daikin = new DaikinAC(inverter_ip, options, function(err) {
-           switch (fan_rate) { 
-              case "A":         fanRate = "A";
-                                return;
-              
-              case "B":         fanRate = "B";
-                                return;
-                                                        
-              case "3":         fanRate = "3";
-                                return;
-                                                                      
-              case "4":         fanRate = "4";
-                                return;
-                                                        
-              case "5":         fanRate = "5";
-                                return;
-                                                        
-              case "6":         fanRate = "6";
-                                return;
-                                                        
-              case "7":         fanRate = "7";
-                                return;
-                                                        
-             default:           break; // unrecognized fan rate
-           }
-           daikin.setACControlInfo({"fanRate":fanRate});
-
-       });
-        
-    }  
-
-    // POST new Fan Rate settings to Airconditioner    
-    daikinFanDirControl(fan_direction) {
-       this.log('daikinFanDirControl');
-    
-       var deviceData = this.getData();     
-	   var inverter_ip = deviceData.ip;
-       
-       var fanDirection = fan_direction;
-       var daikin = new DaikinAC(inverter_ip, options, function(err) {
-           switch (fan_direction) { 
-              case "0":         fanDirection = "0";
-                                return;
-              
-              case "1":         fanDirection = "1";
-                                return;
-                                                        
-              case "2":         fanDirection = "2";
-                                return;
-                                                                      
-              case "3":         fanDirection = "3";
-                                return;
-                                                        
-             default:           break; // unrecognized fan direction
-           }
-           daikin.setACControlInfo({"fanRate":fanDirection});
-           
-       });
-    }  
-       
-    // POST new Temperature settings to Airconditioner    
-    daikinTempControl(atemp) {
-       this.log('daikinTempControl');
-
-       var deviceData = this.getData();     
- 	   var inverter_ip = deviceData.ip;             
-       var daikin = new DaikinAC(inverter_ip, options, function(err) {
-         daikin.setACControlInfo({"targetTemperature":atemp});
-       });
-
     }
 
     // Interrogate Airconditioner Status
@@ -289,100 +223,65 @@ class InverterDevice extends Device {
 		return Promise.resolve();
 	}
 
-//----------------------
-    	
-    // Capability 1: Device get/set mode
-    onCapabilityMode(airco_mode) {
-		this.log('onCapabilityMode');
+//-------- airco controll methods --------------
 
-		this.log('mode:', airco_mode);
-    	this.setCapabilityValue('airco_mode', airco_mode);
-        
-        this.daikinModeControl(airco_mode);
+    // POST new Power settings to Airconditioner    
+    daikinPowerControl(pow) {
+       this.log('daikinPowerControl');
 
-		return Promise.resolve();  
-	}
+	   var deviceData = this.getData();
+       var inverter_ip = deviceData.ip;
+              
+       var daikin = new DaikinAC(inverter_ip, options, function(err) {
+
+           daikin.setACControlInfo({"pow":pow});           
+       });
+       this.log('Power control: ', pow);      
+    }
+
+    // POST new Mode settings to Airconditioner    
+    daikinModeControl(airco_mode) {
+       this.log('daikinModeControl');
+
+       var deviceData = this.getData();     
+	   var inverter_ip = deviceData.ip;
+       
+       util.daikinModeControl(airco_mode, inverter_ip);
+      
+    }  
+
+    // POST new Fan Rate settings to Airconditioner    
+    daikinFanRateControl(fan_rate) {
+       this.log('daikinFanRateControl');
     
-//-------
-    // Capability 2: Device get/set fan rate
-    onCapabilityFanRate(fan_rate) {
-		this.log('onCapabilityFanRate');
-
-		this.log('fan rate:', fan_rate);
-    	this.setCapabilityValue('fan_rate', fan_rate);
-        
-        this.daikinFanRateControl(fan_rate);
-
-		return Promise.resolve();  
-	}
-//-------
-    // Capability 3: Device get/set fan direction
-    onCapabilityFanDir(fan_direction) {
-		this.log('onCapabilityFanDir');
-
-		this.log('fan direction:', fan_direction);
-    	this.setCapabilityValue('fan_direction', fan_direction);
-        
-        this.daikinFanDirControl(fan_direction);
-
-		return Promise.resolve();  
-	}
-//-------
-    // Capability 4: Device get/set humidity
-    onCapabilityAircoHum(ahum) {
-		this.log('onCapabilityAircoHum');
-
-		this.log('humidity %:', ahum);
-    	this.setCapabilityValue('airco_humidity', ahum);
-        
-        return Promise.resolve();  
-	}
-//-------        
-    // Capability 5: Device get/set target temperature
-    onCapabilityAircoTemp(atemp, opts) {
-		this.log('onCapabilityAircoTemp');
-
- 	    var oldTargetTemperature = this.getState().airco_temperature;
-        this.log('oldTargetTemperature: ', oldTargetTemperature);
- 	    
-        if (oldTargetTemperature != atemp) {
-           this.log('new target airco temperature °C:', atemp);        
- 	   	   this.setCapabilityValue('airco_temperature', atemp);
+       var deviceData = this.getData();     
+	   var inverter_ip = deviceData.ip;
        
- 	   	   let device = this;
- 	   	   let tokens = {
- 	   		   'target_temperature': atemp
- 	   	   };
+       util.daikinFanRateControl(fan_rate, inverter_ip);
        
- 	   	   let state  = {
- 	   		   'airco_temperature': atemp
- 	   	   }
+    }  
+
+    // POST new Fan Rate settings to Airconditioner    
+    daikinFanDirControl(fan_direction) {
+       this.log('daikinFanDirControl');
+    
+       var deviceData = this.getData();     
+	   var inverter_ip = deviceData.ip;
        
- 	   	   // trigger temperature flows
- 	   	   let driver = this.getDriver();
- 	   	   driver
- 	   			.triggerTemperatureMoreThan(device, tokens, state)
- 	   			.triggerTemperatureLessThan(device, tokens, state)
- 	   			.triggerTemperatureBetween(device, tokens, state);
-           
-           // update the airco its settings         
-           this.daikinTempControl(atemp);
- 	   	}
+       util.daikinFanDirControl(fan_direction, inverter_ip);
+      
+    }  
        
-		return Promise.resolve(); 
-        
-    }        
-//-------    	
-    // Capability 6 & 7: Device measure in/outside temperature    
-    onCapabilityMeasureTemperature(inside, outside) {
-		this.log('onCapabilityMeasureTemperature');
+    // POST new Temperature settings to Airconditioner    
+    daikinTempControl(atemp) {
+       this.log('daikinTempControl');
 
-        // updates by interrogation of airco, refer to refreshData function.
+       var deviceData = this.getData();     
+ 	   var inverter_ip = deviceData.ip; 
 
-		return Promise.resolve();      
-	}
+       util.daikinTempControl(atemp, inverter_ip);
 
-//----------------------
+    }
 
 }
 

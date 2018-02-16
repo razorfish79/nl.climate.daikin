@@ -154,11 +154,11 @@ class InverterDriver extends Driver {
             var ip_address = settings.inverter_ip;    
             this.log('ip_address', ip_address);                        
 
-            var mode = args.mode;
-            this.log('airco_mode', mode); 
+            var airco_mode = args.mode;
+            this.log('airco_mode', airco_mode); 
                         
-            inverterctrl.daikinModeControl(mode, ip_address);
-			return Promise.resolve(mode);
+            inverterctrl.daikinModeControl(airco_mode, ip_address);
+			return Promise.resolve(airco_mode);
 		});
 
 		this._actionAircoOff = new Homey.FlowCardAction('turn_airco_off').register();
@@ -169,13 +169,58 @@ class InverterDriver extends Driver {
             var ip_address = settings.inverter_ip;    
             this.log('ip_address', ip_address);                        
 
-            var mode = args.mode;
-            this.log('airco_mode', mode); 
+            var airco_mode = args.mode;
+            this.log('airco_mode', airco_mode); 
                         
-            inverterctrl.daikinModeControl(mode, ip_address);
-			return Promise.resolve(mode);
+            inverterctrl.daikinModeControl(airco_mode, ip_address);
+			return Promise.resolve(airco_mode);
 		});            
-        
+
+		this._actionFanRate = new Homey.FlowCardAction('change_fan_rate').register();
+		this._actionFanRate.registerRunListener((args, state) => {
+			let device = args.device;           
+            let settings = device.getSettings();   
+                                    
+            var ip_address = settings.inverter_ip;    
+            this.log('ip_address', ip_address);                        
+
+            var fan_rate = args.frate;
+            this.log('fan_rate', fan_rate);
+                        
+            inverterctrl.daikinFanRateControl(fan_rate, ip_address);
+			return Promise.resolve(fan_rate);
+		});  
+
+		this._actionFanDirection = new Homey.FlowCardAction('change_fan_direction').register();
+		this._actionFanDirection.registerRunListener((args, state) => {
+			let device = args.device;           
+            let settings = device.getSettings();   
+                                    
+            var ip_address = settings.inverter_ip;    
+            this.log('ip_address', ip_address);                        
+
+            var fan_direction = args.fdir;
+            this.log('fan_direction', fan_direction);
+                        
+            inverterctrl.daikinFanDirControl(fan_direction, ip_address);
+			return Promise.resolve(fan_direction);
+		});  
+
+		this._actionTargetTemp = new Homey.FlowCardAction('change_target_temp').register();
+		this._actionTargetTemp.registerRunListener((args, state) => {
+			let device = args.device;           
+            let settings = device.getSettings();   
+                                    
+            var ip_address = settings.inverter_ip;    
+            this.log('ip_address', ip_address);                        
+
+            var atemp = args.atemp;
+            this.log('target temp', atemp);
+                        
+            inverterctrl.daikinTempControl(atemp, ip_address);
+			return Promise.resolve(atemp);
+		});  
+               
 	}
 
 	triggerTemperatureMoreThan(device, tokens, state) {
