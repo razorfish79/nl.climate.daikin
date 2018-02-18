@@ -11,6 +11,7 @@ Adds support for Daikin Airconditioners.
 * add more flow cards
 * improve and extend "error handling"
 * differentiate capabilities by model (inverter, emura, nexura)
+* debugging...
 
 # Development history
 * 31-JAN-18: inside / outside / target temperature (fixed value for now) show on mobile card.
@@ -23,7 +24,9 @@ Adds support for Daikin Airconditioners.
 * 15-FEB-18: Added a trigger, condition and action flowcard.
 * 16-FEB-18: 1/ Action triggers to set the: Airco Operation Mode, Fan rate, Fan direction and Target temperature.
 * 16-FEB-18: 2/ Several code optimizations
-* 16-FEB-18: 3/ Asset updates, now passes the Homey App Store validation cli  
+* 16-FEB-18: 3/ Asset updates, now passes the Homey App Store validation cli
+* 18-FEB-18: 1/ New pairing dialog
+* 18-FEB-18: 2/ Emura driver enabled (still needs refinement...)  
 
 # Note: for testing/troubleshooting purposes the airco power is always set to OFF.
 

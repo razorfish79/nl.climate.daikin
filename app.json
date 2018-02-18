@@ -1,6 +1,6 @@
 {
     "id": "nl.climate.daikin",
-	"version": "0.0.1",
+	"version": "0.0.2",
     "compatibility": ">=1.5.3",
     "sdk": 2,
     "name": {
@@ -264,7 +264,7 @@
     ]
   },
   "capabilities": {
-      "airco_mode": {
+      "airco_mode_inverter": {
           "type": "enum",
           "title": {
               "en": "Airco mode capability",
@@ -305,17 +305,73 @@
               }
             },
             {
-              "id": "auto1",
+              "id": "auto1",           
               "title": {
                 "en": "Auto-1",
                 "nl": "Auto-1"
               }
             },
             {
-              "id": "auto2",
+              "id": "auto2",            
               "title": {
                 "en": "Auto-2",
                 "nl": "Auto-2"
+              }
+            },
+            {
+              "id": "fan",
+              "title": {
+                "en": "Fan",
+                "nl": "Ventilator"
+              }
+            },
+            {
+              "id": "dehumid",
+              "title": {
+                "en": "Dry",
+                "nl": "Ontvochtigen"
+              }
+            }
+         ]
+      },
+      "airco_mode_emura": {
+          "type": "enum",
+          "title": {
+              "en": "Airco mode capability",
+              "nl": "Airco modus functionaliteit"
+          },
+          "getable": true,
+          "setable": true,
+          "min": 0,
+          "max": 7,
+          "step": 1,
+          "values": [
+            {
+                "id": "off",
+                "title": {
+                  "en": "Off",
+                  "nl": "Uit"
+                }
+            },
+            {
+              "id": "cooling",
+              "title": {
+                "en": "Cooling",
+                "nl": "Koelen"
+              }
+            },
+            {
+              "id": "heating",
+              "title": {
+                "en": "Heating",
+                "nl": "Verwarmen"
+              }
+            },
+            {
+              "id": "auto",
+              "title": {
+                "en": "Auto",
+                "nl": "Auto"
               }
             },
             {
@@ -475,7 +531,7 @@
      },
      "class": "other",     
      "capabilities": [
-       "airco_mode",
+       "airco_mode_inverter",
        "fan_rate",
        "fan_direction",
        "airco_humidity",
@@ -532,7 +588,7 @@
              {
                  "id": "picker",
                  "capabilities": [
-                     "airco_mode"
+                     "airco_mode_inverter"
                   ]             
              },
              {
@@ -575,21 +631,186 @@
               "template": "add_devices"
          }
      ], 	 
-     "settings": [{
+     "settings": [
+         {
          "type": "group",
          "label": {
-         "en": "Connected via WiFi using:",
-         "nl": "Verbonden via WiFi gebruikmakende van:"
+         "en": "Network setting",
+         "nl": "Netwerk instellingen"
          },
          "children": [{
               "id": "inverter_ip",
               "type": "text",
               "label": {
-              "en": "IP address",
-              "nl": "IP adres"
+              "en": "Airconditioners IP address",
+              "nl": "Airconditioners IP adres"
               },
               "value": ""
           }]
-      }]
+      },
+      {
+      "type": "group",
+      "label": {
+      "en": "Application refresh (all settings in seconds)",
+      "nl": "Applicatie verversen (alle instelling in seconden)"
+      },
+      "children": [{
+           "id": "interval",
+           "type": "text",
+           "label": {
+           "en": "Polling interval",
+           "nl": "Gegevens opvragen elke"
+           },
+           "value": "10",
+           "min": 5,
+           "max": 30.0,
+           "step": 1  
+       }]
+     }]
+   },
+   {
+     "id": "emura",
+     "name": {
+       "en": "Emura",
+       "nl": "Emura"
+     },
+     "class": "other",     
+     "capabilities": [
+       "airco_mode_emura",
+       "fan_rate",
+       "fan_direction",
+       "airco_humidity",
+       "airco_temperature",
+	   "measure_temperature.inside",
+       "measure_temperature.outside" 
+     ],
+     "capabilitiesOptions": {
+   		"airco_mode": {
+   			"title": {
+   				"en": "Airco",
+   				"nl": "Airco"
+              }   
+          },
+   		"fan_rate": {
+   			"title": {
+   				"en": "Fan",
+   				"nl": "Vent."
+              }   
+          },
+     	"fan_direction": {
+     		"title": {
+     			"en": "Wings",
+     			"nl": "Lamel"
+            }   
+        },
+     	"airco_humidity": {
+     		"title": {
+     			"en": "Set",
+     			"nl": "Doel"
+            }   
+        },
+  		"airco_temperature": {
+  			"title": {
+  				"en": "Set",
+  				"nl": "Doel"
+             }   
+         },         
+ 		"measure_temperature.inside": {
+ 			"title": {
+ 				"en": "Inside",
+ 				"nl": "Binnen"
+            }   
+        },
+		"measure_temperature.outside": {
+			"title": {
+				"en": "Outside",
+				"nl": "Buiten"
+			}
+		}
+     },     
+     "mobile": {
+         "components": [
+             {
+                 "id": "picker",
+                 "capabilities": [
+                     "airco_mode_emura"
+                  ]             
+             },
+             {
+                 "id": "sensor",
+                 "capabilities": [
+                     "fan_rate",
+                     "fan_direction"
+                  ],
+                 "options": {
+                    "showTitle": true,
+                    "icons": {
+                        "fan_direction": "./drivers/inverter/assets/oscillation.svg",
+                        "fan_rate": "./drivers/inverter/assets/house.svg"
+                    }
+                }
+             },
+             {
+               "id": "thermostat",
+               "capabilities": [ "airco_temperature" ]
+             }
+         ]
+     },
+     "images": {
+       "large": "/drivers/inverter/assets/images/large.png",
+       "small": "/drivers/inverter/assets/images/small.png"
+     },	          
+     "pair": [
+         {
+             "id": "start"
+         },
+         {
+             "id": "list_my_devices",
+             "template": "list_devices",
+             "navigation": {
+                 "next": "add_my_devices"
+             }
+         },
+         {
+              "id": "add_my_devices",
+              "template": "add_devices"
+         }
+     ], 	 
+     "settings": [
+         {
+         "type": "group",
+         "label": {
+         "en": "Network setting",
+         "nl": "Netwerk instellingen"
+         },
+         "children": [{
+              "id": "inverter_ip",
+              "type": "text",
+              "label": {
+              "en": "Airconditioners IP address",
+              "nl": "Airconditioners IP adres"
+              },
+              "value": ""
+          }]
+      },
+      {
+      "type": "group",
+      "label": {
+      "en": "Application refresh (all settings in seconds)",
+      "nl": "Applicatie verversen (alle instelling in seconden)"
+      },
+      "children": [{
+           "id": "interval",
+           "type": "text",
+           "label": {
+           "en": "Polling interval",
+           "nl": "Gegevens opvragen elke"
+           },
+           "value": "10",
+           "min": 5,
+           "max": 30.0,
+           "step": 1  
+       }]
+     }]
    }]
 }

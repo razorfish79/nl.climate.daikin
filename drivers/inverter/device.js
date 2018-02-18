@@ -11,8 +11,8 @@ class InverterDevice extends Device {
 
 		super.onInit();
 
-		this.log('Capability registration started...');
-        this.registerCapabilityListener('airco_mode', this.onCapabilityMode.bind(this));
+		this.log('Inverter capability registration started...');
+        this.registerCapabilityListener('airco_mode_inverter', this.onCapabilityMode.bind(this));
 		this.registerCapabilityListener('fan_rate', this.onCapabilityFanRate.bind(this));			
 		this.registerCapabilityListener('fan_direction', this.onCapabilityFanDir.bind(this));	       
 		this.registerCapabilityListener('airco_humidty', this.onCapabilityAircoHum.bind(this));
@@ -20,36 +20,42 @@ class InverterDevice extends Device {
 		this.registerCapabilityListener('measure_temperature.inside', this.onCapabilityMeasureTemperature.bind(this));
         this.registerCapabilityListener('measure_temperature.outside', this.onCapabilityMeasureTemperature.bind(this));       
                 
-		this.log('Registration of Capabilities and Report Listeners completed!');
+		this.log('Inverter registration of Capabilities and Report Listeners completed!');
         
         // for documentation about the Daikin API look at https://github.com/Apollon77/daikin-controller and at
         // https://github.com/Apollon77/daikin-controller
 
+        this.inverterIsDeleted = false;
         this.refreshData(); // refresh every x-seconds the Homey app with data retrieved from the airco...
 
     }
 		
 	onAdded() {
-		this.log('device added');
+		this.log('Inverter device added');
 
 	}
 
     // this method is called when the Device is deleted
     onDeleted() {
-        this.log('device deleted');
-		
+        this.log('Inverter device deleted');
+        
+        this.setSettings({inverter_ip: "0.0.0.0", interval: "0"})
+            .then(this.log('settings for inverter are cleared'));
+            
+        this.inverterIsDeleted = true;
+        
     }
 
 //-------- app capabilities --------------
     	
     // Capability 1: Device get/set mode
-    onCapabilityMode(airco_mode) {
+    onCapabilityMode(airco_mode_inverter) {
 		this.log('onCapabilityMode');
 
-		this.log('mode:', airco_mode);
-    	this.setCapabilityValue('airco_mode', airco_mode);
+		this.log('mode:', airco_mode_inverter);
+    	this.setCapabilityValue('airco_mode_inverter', airco_mode_inverter);
         
-        this.daikinModeControl(airco_mode);
+        this.daikinModeControl(airco_mode_inverter);
 
 		return Promise.resolve();  
 	}
@@ -127,7 +133,7 @@ class InverterDevice extends Device {
     onCapabilityMeasureTemperature(inside, outside) {
 		this.log('onCapabilityMeasureTemperature');
 
-        // updates by interrogation of airco, refer to refreshData function.
+        // updates by interrogation of the airco, refer to refreshData method.
 
 		return Promise.resolve();      
 	}
@@ -138,32 +144,36 @@ class InverterDevice extends Device {
     refreshData() {
 		this.log('refreshData');
         
-		var deviceData = this.getData();
-        var inverter_ip = deviceData.ip;
+        if (this.inverterIsDeleted) {
+            this.log('Inverter device has been deleted, the refresh loop is now stopped...');
+            
+            return;
+        }
+
+        var settings = this.getSettings();
+        var inverter_ip = settings.inverter_ip; this.log('Inverter ip-address: ', inverter_ip);        
+        var interval = settings.interval; this.log('Refresh interval: ', interval);
              
         this.deviceRequestControl(inverter_ip); // refresh the app
 		this.deviceRequestSensor(inverter_ip);  // refresh the app
-
-        var interval = 10; // in seconds      
+     
         setTimeout(this.refreshData.bind(this), interval * 1000);
         
     }
 
     // Interrogate Airconditioner Status
-	deviceRequestControl(ip_address) {
+	deviceRequestControl(inverter_ip) {
 		this.log('deviceRequestControl');
 	    
-		var inverter_ip = ip_address;
 	    util.request_control(inverter_ip, this.updateControlListeners.bind(this));
 		
 		return Promise.resolve();
     }
 
     // Interrogate Airconditioner Temperature Sensor
-	deviceRequestSensor(ip_address) {
+	deviceRequestSensor(inverter_ip) {
 		this.log('deviceRequestSensor');
 				
-	    var inverter_ip = ip_address;
 	    util.request_sensor(inverter_ip, this.updateSensorListeners.bind(this));
 		
 		return Promise.resolve();
@@ -174,11 +184,11 @@ class InverterDevice extends Device {
 		this.log('updateControlListeners');
 
     //---- mode
-        var airco_modes = [ "auto", "auto1", "dehumid", "cooling", "heating", "off", "fan", "auto2" ];                        
+        var airco_mode_inverters = [ "auto", "auto1", "dehumid", "cooling", "heating", "off", "fan", "auto2" ];                        
         const amode = Number(control_info[2]);
-        const airco_mode = airco_modes[amode];	
-        this.log('mode:', airco_mode);
-        this.setCapabilityValue('airco_mode', airco_mode);
+        const airco_mode_inverter = airco_mode_inverters[amode];	
+        this.log('mode:', airco_mode_inverter);
+        this.setCapabilityValue('airco_mode_inverter', airco_mode_inverter);
         
     //---- temperature
 		const atemp = Number(control_info[4]);
@@ -229,8 +239,8 @@ class InverterDevice extends Device {
     daikinPowerControl(pow) {
        this.log('daikinPowerControl');
 
-	   var deviceData = this.getData();
-       var inverter_ip = deviceData.ip;
+       var settings = this.getSettings();
+       var inverter_ip = settings.inverter_ip;
               
        var daikin = new DaikinAC(inverter_ip, options, function(err) {
 
@@ -240,13 +250,13 @@ class InverterDevice extends Device {
     }
 
     // POST new Mode settings to Airconditioner    
-    daikinModeControl(airco_mode) {
+    daikinModeControl(airco_mode_inverter) {
        this.log('daikinModeControl');
 
-       var deviceData = this.getData();     
-	   var inverter_ip = deviceData.ip;
+       var settings = this.getSettings();
+       var inverter_ip = settings.inverter_ip;
        
-       util.daikinModeControl(airco_mode, inverter_ip);
+       util.daikinModeControl(airco_mode_inverter, inverter_ip);
       
     }  
 
@@ -254,8 +264,8 @@ class InverterDevice extends Device {
     daikinFanRateControl(fan_rate) {
        this.log('daikinFanRateControl');
     
-       var deviceData = this.getData();     
-	   var inverter_ip = deviceData.ip;
+       var settings = this.getSettings();
+       var inverter_ip = settings.inverter_ip;
        
        util.daikinFanRateControl(fan_rate, inverter_ip);
        
@@ -265,8 +275,8 @@ class InverterDevice extends Device {
     daikinFanDirControl(fan_direction) {
        this.log('daikinFanDirControl');
     
-       var deviceData = this.getData();     
-	   var inverter_ip = deviceData.ip;
+       var settings = this.getSettings();
+       var inverter_ip = settings.inverter_ip;
        
        util.daikinFanDirControl(fan_direction, inverter_ip);
       
@@ -276,8 +286,8 @@ class InverterDevice extends Device {
     daikinTempControl(atemp) {
        this.log('daikinTempControl');
 
-       var deviceData = this.getData();     
- 	   var inverter_ip = deviceData.ip; 
+       var settings = this.getSettings();
+       var inverter_ip = settings.inverter_ip;
 
        util.daikinTempControl(atemp, inverter_ip);
 

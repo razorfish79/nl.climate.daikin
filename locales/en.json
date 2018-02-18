@@ -1,12 +1,15 @@
 {
-  "settings": {
-    "device": {
-      "title": "Daikin equipment settings",
-      "intro": "To connect to your airconditioner via WiFi we need the settings below.",
-      "ip": "IP-Address:"
-    },
-    "button": {
-      "save": "Save"
+    "pair":{
+        "start":{
+            "intro":"Enter your Airco's IP address, give it a name and enter the desired polling interval in seconds.",
+            "title":"Daikin equipment settings",
+            "error":"An error has occurred, check the just entered IP-address.",
+            "required":"IP address is required.",
+            "ipAddress":"IP address",
+            "deviceName":"Device name",
+            "saveSettings":"Add device",
+            "add":"Your settings are being saved now...",
+            "deviceInterval":"Interval"   
+        }
     }
-  }
 }

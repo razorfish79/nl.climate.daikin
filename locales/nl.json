@@ -1,12 +1,15 @@
 {
-  "settings": {
-    "device": {
-      "title": "Daikin apparaat instellingen",
-      "intro": "Om verbinding te kunnen maken met uw airconditioner via WiFi zijn onderstaande gegevens benodigd.",
-      "ip": "IP-adres:"
-    },
-    "button": {
-      "save": "Opslaan"
+    "pair":{
+        "start":{
+            "intro":"Voer het IP adres van de airconditioner in, geef deze een naam en geef de verversings interval in seconden op.",
+            "title":"Daikin apparaat instellingen",
+            "error":"Er is een fout opgetreden, controleer het zojuist ingevoerde IP-adres.",
+            "required":"IP adres is verplicht.",
+            "ipAddress":"IP adres",
+            "deviceName":"Naam",
+            "saveSettings":"Voeg toe",
+            "add":"Uw instellingen worden nu opgeslagen...",
+            "deviceInterval":"Interval"          
+        }
     }
-  }
 }
