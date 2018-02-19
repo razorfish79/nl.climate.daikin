@@ -27,7 +27,10 @@ Adds support for Daikin Airconditioners.
 * 16-FEB-18: 3/ Asset updates, now passes the Homey App Store validation cli
 * 18-FEB-18: 1/ New pairing dialog
 * 18-FEB-18: 2/ Emura driver enabled (still needs refinement...)  
-* 19-FEB-18: Flowcard fix, now available to both the Emura and Inverter driver
+* 19-FEB-18: 1/ Flowcard fix, now available to both the Emura and Inverter driver
+* 19-FEB-18: 2/ Introduced demo mode which can be set via settings (as precaution by default the airco is put into demo mode)
+* 19-FEB-18:    in demo mode the power is always OFF.
+* 19-FEB-18: 3/ Mode switching: crushed a few bugs
 
 # Note: for testing/troubleshooting purposes the airco power is always set to OFF.
 

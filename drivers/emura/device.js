@@ -25,6 +25,8 @@ class EmuraDevice extends Device {
         // for documentation about the Daikin API look at https://github.com/Apollon77/daikin-controller and at
         // https://github.com/Apollon77/daikin-controller
 
+    	this.setCapabilityValue('airco_mode_emura', "off"); // ensure a valid and safe mode...
+
         this.emuraIsDeleted = false;
         this.refreshData(); // refresh every x-seconds the Homey app with data retrieved from the airco...
 
@@ -51,8 +53,9 @@ class EmuraDevice extends Device {
     // Capability 1: Device get/set mode
     onCapabilityMode(airco_mode_emura) {
 		this.log('onCapabilityMode');
-
 		this.log('mode:', airco_mode_emura);
+        
+        if (airco_mode_emura === "off") airco_mode_emura = "auto"; // "power off" is not a mode...
     	this.setCapabilityValue('airco_mode_emura', airco_mode_emura);
         
         this.daikinModeControl(airco_mode_emura);
@@ -255,8 +258,9 @@ class EmuraDevice extends Device {
 
        var settings = this.getSettings();
        var emura_ip = settings.emura_ip;
+       var demo_mode = settings.demomode;
        
-       util.daikinModeControl(airco_mode_emura, emura_ip);
+       util.daikinModeControl(airco_mode_emura, emura_ip, demo_mode);
       
     }  
 

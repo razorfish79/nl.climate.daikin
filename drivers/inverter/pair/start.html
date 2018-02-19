@@ -19,7 +19,8 @@ function saveSettings () {
 			    name: inputDeviceName,
 			    settings: {
 			            	"inverter_ip": inputIPAddress,				
-			            	"interval": inputDeviceInterval
+			            	"interval": inputDeviceInterval,
+                            "demomode": true
 			    }
 		};
 		Homey.emit('manual_add', device, function (err, result) {
