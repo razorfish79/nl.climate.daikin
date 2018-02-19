@@ -58,7 +58,7 @@
                 {
                     "name": "device",
                     "type": "device",
-                    "filter": "driver_id=inverter"
+                    "filter": "driver_id=inverter||emura"
                 },
                 {
                     "name": "target_temperature",
@@ -82,7 +82,7 @@
                 {
                     "name": "device",
                     "type": "device",
-                    "filter": "driver_id=inverter"
+                    "filter": "driver_id=inverter||emura"
                 },
                 {
                     "name": "target_temperature",
@@ -106,7 +106,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=inverter"
+            "filter": "driver_id=inverter||emura"
           },
      	  {
      	  	"name": "mode",
@@ -148,7 +148,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=inverter"
+            "filter": "driver_id=inverter||emura"
           },
      	  {
      	  	"name": "mode",
@@ -171,7 +171,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=inverter"
+            "filter": "driver_id=inverter||emura"
           },
      	  {
      	  	"name": "frate",
@@ -213,7 +213,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=inverter"
+            "filter": "driver_id=inverter||emura"
           },
      	  {
      	  	"name": "fdir",
@@ -246,7 +246,7 @@
        	   {
        		  "name": "device",
        		  "type": "device",
-       		  "filter": "driver_id=inverter"
+       		  "filter": "driver_id=inverter||emura"
        	    },
        	    {
               "name": "atemp",
