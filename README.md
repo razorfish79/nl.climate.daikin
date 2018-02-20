@@ -31,7 +31,7 @@ Adds support for Daikin Airconditioners.
 * 19-FEB-18: 2/ Introduced demo mode which can be set via settings (as precaution by default the airco is put into demo mode)
 * 19-FEB-18:    in demo mode the power is always OFF.
 * 19-FEB-18: 3/ Mode switching: crushed a few bugs
-* 20-FEB-18: The airco can no also be switched off with the mode settings wheel
+* 20-FEB-18: The airco can now also be switched off with the mode settings wheel
 
 # Note: airco's power is always set to OFF when demo mode is selected (= default)
 
