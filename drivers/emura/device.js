@@ -55,7 +55,6 @@ class EmuraDevice extends Device {
 		this.log('onCapabilityMode');
 		this.log('mode:', airco_mode_emura);
         
-        if (airco_mode_emura === "off") airco_mode_emura = "auto"; // "power off" is not a mode...
     	this.setCapabilityValue('airco_mode_emura', airco_mode_emura);
         
         this.daikinModeControl(airco_mode_emura);
@@ -156,9 +155,10 @@ class EmuraDevice extends Device {
         var settings = this.getSettings();
         var emura_ip = settings.emura_ip; this.log('Emura ip-address: ', emura_ip);        
         var interval = settings.interval; this.log('Refresh interval: ', interval);
-             
-        this.deviceRequestControl(emura_ip); // refresh the app
-		this.deviceRequestSensor(emura_ip);  // refresh the app
+
+        var currentmode = this.getState().airco_mode_emura;   
+        if (currentmode != "off") this.deviceRequestControl(emura_ip); // refresh only when the airco is powered on...             
+		this.deviceRequestSensor(emura_ip);                            // always refresh sensors...
      
         setTimeout(this.refreshData.bind(this), interval * 1000);
         

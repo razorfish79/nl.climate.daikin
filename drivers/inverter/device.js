@@ -55,7 +55,6 @@ class InverterDevice extends Device {
 		this.log('onCapabilityMode');
 		this.log('mode:', airco_mode_inverter);
         
-        if (airco_mode_inverter === "off") airco_mode_inverter = "auto"; // "power off" is not a mode...
     	this.setCapabilityValue('airco_mode_inverter', airco_mode_inverter);
         
         this.daikinModeControl(airco_mode_inverter);
@@ -156,9 +155,10 @@ class InverterDevice extends Device {
         var settings = this.getSettings();
         var inverter_ip = settings.inverter_ip; this.log('Inverter ip-address: ', inverter_ip);        
         var interval = settings.interval; this.log('Refresh interval: ', interval);
-             
-        this.deviceRequestControl(inverter_ip); // refresh the app
-		this.deviceRequestSensor(inverter_ip);  // refresh the app
+        
+        var currentmode = this.getState().airco_mode_inverter;     
+        if (currentmode != "off") this.deviceRequestControl(inverter_ip); // refresh only when the airco is powered on...
+		this.deviceRequestSensor(inverter_ip);                            // always refresh sensors...
      
         setTimeout(this.refreshData.bind(this), interval * 1000);
         
