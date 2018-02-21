@@ -136,8 +136,63 @@ class InverterDevice extends Device {
 		this.log('onCapabilityMeasureTemperature');
 
         // updates by interrogation of the airco, refer to refreshData method.
+        
+    //-------
+        
+ 	    var oldOutsideTemperature = this.getState().airco_temperature.outside;
+        this.log('oldOutsideTemperature: ', oldOutsideTemperature);
+ 	    
+        if (oldOutsideTemperature != outside) {
+           this.log('new outside airco temperature °C:', outside);        
+ 	   	   this.setCapabilityValue('airco_temperature', outside);
+       
+ 	   	   let device = this;
+ 	   	   let outside_tokens = {
+ 	   		   'outside_temperature': outside
+ 	   	   };
+       
+ 	   	   let outside_state  = {
+ 	   		   'temperature.outside': outside
+ 	   	   }
+       
+ 	   	   // trigger temperature flows
+ 	   	   let driver = this.getDriver();
+ 	   	   driver
+ 	   			.triggerTemperatureMoreThan(device, outside_tokens, outside_state)
+ 	   			.triggerTemperatureLessThan(device, outside_tokens, outside_state)
+ 	   			.triggerTemperatureBetween(device, outside_tokens, outside_state);
 
-		return Promise.resolve();      
+        }
+
+    //-------
+        
+	    var oldInsideTemperature = this.getState().airco_temperature.inside;
+        this.log('oldInsideTemperature: ', oldInsideTemperature);
+
+        if (oldInsideTemperature != inside) {
+           this.log('new outside airco temperature °C:', inside);        
+	   	   this.setCapabilityValue('airco_temperature', inside);
+
+	   	   let device = this;
+	   	   let inside_tokens = {
+	   		   'inside_temperature': inside
+	   	   };
+
+	   	   let inside_state  = {
+	   		   'temperature.inside': inside
+	   	   }
+
+	   	   // trigger temperature flows
+	   	   let driver = this.getDriver();
+	   	   driver
+	   			.triggerTemperatureMoreThan(device, inside_tokens, inside_state)
+	   			.triggerTemperatureLessThan(device, inside_tokens, inside_state)
+	   			.triggerTemperatureBetween(device, inside_tokens, inside_state);
+
+        }
+
+		return Promise.resolve();
+             
 	}
 
 //-------- airco data retrieval and app refresh/update methods --------------

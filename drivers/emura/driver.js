@@ -8,88 +8,97 @@ const emuractrl = require('../../lib/daikin');
 class EmuraDriver extends Driver {		
 
 	onInit() {
-		this.deviceType = 'emura';
+        this.deviceType = 'emura';
 
     //--- Temperature flowcards	
 	    /*** INSIDE TEMPERATURE TRIGGERS ***/
 /*		this._triggerTemperatureMoreThan = new Homey.FlowCardTriggerDevice('change_inside_temperature_more_than').register();
 		this._triggerTemperatureMoreThan.registerRunListener((args, state) => {
-			let conditionMet = state.measure_temperature > args.temperature;
+			let conditionMet = state['measure_temperature.inside'] > args.temperature;
 			return Promise.resolve(conditionMet);
 		});
 
 		this._triggerTemperatureLessThan = new Homey.FlowCardTriggerDevice('change_inside_temperature_less_than').register()
 		this._triggerTemperatureLessThan.registerRunListener((args, state) => {
-			let conditionMet = state.measure_temperature < args.temperature;
+			let conditionMet = state['measure_temperature.inside'] < args.temperature;
 			return Promise.resolve(conditionMet);
 		});
 
 		this._triggerTemperatureBetween = new Homey.FlowCardTriggerDevice('change_inside_temperature_between').register()
 		this._triggerTemperatureBetween.registerRunListener((args, state) => {
-			let conditionMet = state.measure_temperature > args.temperature_from && state.measure_temperature < args.temperature_to;
+			let conditionMet = state['measure_temperature.inside'] > args.temperature_from && state['measure_temperature.inside'] < args.temperature_to;
 			return Promise.resolve(conditionMet);
 		});
 
 		/*** INSIDE TEMPERATURE CONDITIONS ***/
-/*		this._conditionTemperatureMoreThan = new Homey.FlowCardCondition('has_inside_temperature_more_than').register();
+		this._conditionTemperatureMoreThan = new Homey.FlowCardCondition('has_inside_temperature_more_than').register();
 		this._conditionTemperatureMoreThan.registerRunListener((args, state) => {
 			let device = args.device;
-			let conditionMet = device.getState().measure_temperature > args.temperature;
+			let conditionMet = device.getState()['measure_temperature.inside'] > args.temperature;
+            this.log('condition - temperature', device.getState()['measure_temperature.inside']);
+            this.log('condition - args.temperature', args.temperature);
+            this.log('condition - conditionMet inside temp', conditionMet);
 			return Promise.resolve(conditionMet);
 		});
 
 		this._conditionTemperatureLessThan = new Homey.FlowCardCondition('has_inside_temperature_less_than').register();
 		this._conditionTemperatureLessThan.registerRunListener((args, state) => {
 			let device = args.device;
-			let conditionMet = device.getState().measure_temperature < args.temperature;
+			let conditionMet = device.getState()['measure_temperature.inside'] < args.temperature;
 			return Promise.resolve(conditionMet);
 		});
 
 		this._conditionTemperatureBetween = new Homey.FlowCardCondition('has_inside_temperature_between').register();
 		this._conditionTemperatureBetween.registerRunListener((args, state) => {
 			let device = args.device;
-			let conditionMet = device.getState().measure_temperature > args.temperature_from && device.getState().measure_temperature < args.temperature_to;
+			let conditionMet = device.getState()['measure_temperature.inside'] > args.temperature_from && device.getState()['measure_temperature.inside'] < args.temperature_to;
 			return Promise.resolve(conditionMet);
 		});
 
 		/*** OUTSIDE TEMPERATURE TRIGGERS ***/
 /*		this._triggerTemperatureMoreThan = new Homey.FlowCardTriggerDevice('change_outside_temperature_more_than').register();
 		this._triggerTemperatureMoreThan.registerRunListener((args, state) => {
-			let conditionMet = state.measure_temperature > args.temperature;
+			let conditionMet = state['measure_temperature.outside'] > args.outside;
+            this.log('trigger args.temperature', args.outside);
+            this.log('trigger state.['measure_temperature.outside']', state['measure_temperature.outside'] );
+            this.log('trigger conditionMet outside temp', conditionMet);
 			return Promise.resolve(conditionMet);
 		});
 
 		this._triggerTemperatureLessThan = new Homey.FlowCardTriggerDevice('change_outside_temperature_less_than').register()
 		this._triggerTemperatureLessThan.registerRunListener((args, state) => {
-			let conditionMet = state.measure_temperature < args.temperature;
+			let conditionMet = state['measure_temperature.outside'] < args.temperature;
 			return Promise.resolve(conditionMet);
 		});
 
 		this._triggerTemperatureBetween = new Homey.FlowCardTriggerDevice('change_outside_temperature_between').register()
 		this._triggerTemperatureBetween.registerRunListener((args, state) => {
-			let conditionMet = state.measure_temperature > args.temperature_from && state.measure_temperature < args.temperature_to;
+			let conditionMet = state['measure_temperature.outside'] > args.temperature_from && state['measure_temperature.outside'] < args.temperature_to;
 			return Promise.resolve(conditionMet);
 		});
 
 		/*** OUTSIDE TEMPERATURE CONDITIONS ***/
-/*		this._conditionTemperatureMoreThan = new Homey.FlowCardCondition('has_outside_temperature_more_than').register();
+		this._conditionTemperatureMoreThan = new Homey.FlowCardCondition('has_outside_temperature_more_than').register();
 		this._conditionTemperatureMoreThan.registerRunListener((args, state) => {
 			let device = args.device;
-			let conditionMet = device.getState().measure_temperature > args.temperature;
+			let conditionMet = device.getState()['measure_temperature.outside'] > args.temperature;
+            this.log('condition - temperature', device.getState()['measure_temperature.outside']);
+            this.log('condition - args.temperature', args.temperature);
+            this.log('condition - conditionMet outside temp', conditionMet);
 			return Promise.resolve(conditionMet);
 		});
 
 		this._conditionTemperatureLessThan = new Homey.FlowCardCondition('has_outside_temperature_less_than').register();
 		this._conditionTemperatureLessThan.registerRunListener((args, state) => {
 			let device = args.device;
-			let conditionMet = device.getState().measure_temperature < args.temperature;
+			let conditionMet = device.getState()['measure_temperature.outside'] < args.temperature;
 			return Promise.resolve(conditionMet);
 		});
 
 		this._conditionTemperatureBetween = new Homey.FlowCardCondition('has_outside_temperature_between').register();
 		this._conditionTemperatureBetween.registerRunListener((args, state) => {
 			let device = args.device;
-			let conditionMet = device.getState().measure_temperature > args.temperature_from && device.getState().measure_temperature < args.temperature_to;
+			let conditionMet = device.getState()['measure_temperature.outside'] > args.temperature_from && device.getState()['measure_temperature.outside'] < args.temperature_to;
 			return Promise.resolve(conditionMet);
 		});
 
@@ -102,7 +111,7 @@ class EmuraDriver extends Driver {
             this.log('trigger conditionMet', conditionMet);
 			return Promise.resolve(conditionMet);
 		});
-/*
+
 		this._triggerTemperatureLessThan = new Homey.FlowCardTriggerDevice('change_target_temperature_less_than').register()
 		this._triggerTemperatureLessThan.registerRunListener((args, state) => {
 			let conditionMet = state.airco_temperature < args.target_temperature;
@@ -126,7 +135,7 @@ class EmuraDriver extends Driver {
 			return Promise.resolve(conditionMet);
 		});
 
-/*		this._conditionTemperatureLessThan = new Homey.FlowCardCondition('has_target_temperature_less_than').register();
+		this._conditionTemperatureLessThan = new Homey.FlowCardCondition('has_target_temperature_less_than').register();
 		this._conditionTemperatureLessThan.registerRunListener((args, state) => {
 			let device = args.device;
 			let conditionMet = device.getState().airco_temperature < args.target_temperature;
@@ -139,7 +148,8 @@ class EmuraDriver extends Driver {
 			let conditionMet = device.getState().airco_temperature > args.target_temperature_from && device.getState().airco_temperature < args.target_temperature_to;
 			return Promise.resolve(conditionMet);
 		});
-*/               
+
+     
     //--- Fan rate flowcards
         
     //--- Fan direction flowcards

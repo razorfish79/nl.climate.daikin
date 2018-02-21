@@ -9,7 +9,7 @@
     },
     "description": {
         "en": "Adds support for Daikin Airconditioners.",
-		"nl": "Adds support for Daikin Airconditioners."
+		"nl": "Maakt bediening van Daikin Airconditioners mogelijk."
     },
     "category": [
         "appliances",
@@ -22,10 +22,7 @@
     "images": {
       "large": "/assets/images/large.png",
       "small": "/assets/images/small.png"
-    },
-	"permission": [
-         "homey:manager:speech-output"
-    ],    
+    },   
     "author": {
         "name": "Peter Eier",
         "email": "peter.eier@upcmail.nl"
@@ -41,7 +38,7 @@
     "contributing": {
       "donate": {
         "paypal": {
-          "username": "my_paypal.me_username",
+          "username": "peter.eier@upcmail.nl",
           "currency": "EUR"
         }
       }
@@ -69,7 +66,130 @@
                     }
                 }
             ]
-        }          
+        },          
+        {
+            "id": "change_target_temperature_less_than",
+            "title": {
+                "en": "The target temperature is less than",
+                "nl": "De doeltemperatuur is minder dan"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device",
+                    "filter": "driver_id=inverter|emura"
+                },
+                {
+                    "name": "target_temperature",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "change_target_temperature_between",
+            "title": {
+                "en": "The target temperature is between",
+                "nl": "De doeltemperatuur is tussen"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device",
+                    "filter": "driver_id=inverter|emura"
+                },
+                {
+                    "name": "target_temperature_from",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                },
+                                    {
+                    "name": "target_temperature_to",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "change_outside_temperature_more_than",
+            "title": {
+                "en": "The outside temperature is more than",
+                "nl": "De buitentemperatuur is meer dan"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device"
+                },
+                {
+                    "name": "temperature",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "change_outside_temperature_less_than",
+            "title": {
+                "en": "The outside temperature is less than",
+                "nl": "De buitentemperatuur is minder dan"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device"                  
+                },
+                {
+                    "name": "temperature",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "change_outside_temperature_between",
+            "title": {
+                "en": "The outside temperature is between",
+                "nl": "De buitentemperatuur is tussen"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device"                  
+                },
+                {
+                    "name": "temperature_from",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                },
+                                    {
+                    "name": "temperature_to",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        }
     ],
     "conditions": [
         {
@@ -86,6 +206,206 @@
                 },
                 {
                     "name": "target_temperature",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "has_target_temperature_less_than",
+            "title": {
+                "en": "The target temperature !{{is|isn't}} less than",
+                "nl": "De doeltemperatuur !{{is|is niet}} minder dan"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device",
+                    "filter": "driver_id=inverter|emura"                    
+                },
+                {
+                    "name": "target_temperature",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "has_target_temperature_between",
+            "title": {
+                "en": "The target temperature !{{is|isn't}} between",
+                "nl": "De doeltemperatuur !{{is|is niet}} tussen"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device",
+                    "filter": "driver_id=inverter|emura"                    
+                },
+                {
+                    "name": "target_temperature_from",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                },
+                                    {
+                    "name": "target_temperature_to",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "has_outside_temperature_more_than",
+            "title": {
+                "en": "The outside temperature !{{is|isn't}} more than",
+                "nl": "De buitentemperatuur !{{is|is niet}} meer dan"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device",
+                    "filter": "driver_id=inverter|emura"
+                },
+                {
+                    "name": "temperature",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "has_outside_temperature_less_than",
+            "title": {
+                "en": "The outside temperature !{{is|isn't}} less than",
+                "nl": "De buitentemperatuur !{{is|is niet}} minder dan"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device",
+                    "filter": "driver_id=inverter|emura"
+                },
+                {
+                    "name": "temperature",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "has_outside_temperature_between",
+            "title": {
+                "en": "The outside temperature !{{is|isn't}} between",
+                "nl": "De buitentemperatuur !{{is|is niet}} tussen"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device",
+                    "filter": "driver_id=inverter|emura"
+                },
+                {
+                    "name": "temperature_from",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                },
+                                    {
+                    "name": "temperature_to",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "has_inside_temperature_more_than",
+            "title": {
+                "en": "The inside temperature !{{is|isn't}} more than",
+                "nl": "De binnentemperatuur !{{is|is niet}} meer dan"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device",
+                    "filter": "driver_id=inverter|emura"
+                },
+                {
+                    "name": "temperature",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "has_inside_temperature_less_than",
+            "title": {
+                "en": "The inside temperature !{{is|isn't}} less than",
+                "nl": "De binnentemperatuur !{{is|is niet}} minder dan"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device",
+                    "filter": "driver_id=inverter|emura"
+                },
+                {
+                    "name": "temperature",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "has_inside_temperature_between",
+            "title": {
+                "en": "The inside temperature !{{is|isn't}} between",
+                "nl": "De binnentemperatuur !{{is|is niet}} tussen"
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device",
+                    "filter": "driver_id=inverter|emura"
+                },
+                {
+                    "name": "temperature_from",
+                    "type": "number",
+                    "placeholder": {
+                        "en": "in C",
+                        "nl": "in C"
+                    }
+                },
+                                    {
+                    "name": "temperature_to",
                     "type": "number",
                     "placeholder": {
                         "en": "in C",
@@ -135,7 +455,6 @@
      	  		 }
      	   	  ]
      	   }
-
          ]
       },
       {
