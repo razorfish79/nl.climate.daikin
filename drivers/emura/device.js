@@ -25,8 +25,8 @@ class EmuraDevice extends Device {
         // for documentation about the Daikin API look at https://github.com/Apollon77/daikin-controller and at
         // https://github.com/Apollon77/daikin-controller
 
-    	this.setCapabilityValue('airco_mode_emura', "off"); // ensure a valid and safe mode...
-
+    	this.setCapabilityValue('airco_mode_emura', "off");  // ensure a valid mode is shown at start up...
+        
         this.emuraIsDeleted = false;
         this.refreshData(); // refresh every x-seconds the Homey app with data retrieved from the airco...
 
@@ -138,7 +138,8 @@ class EmuraDevice extends Device {
         // updates by interrogation of the airco, refer to refreshData method.
 
 		return Promise.resolve();      
-	}
+	
+    }
 
 //-------- airco data retrieval and app refresh/update methods --------------
 
@@ -187,11 +188,12 @@ class EmuraDevice extends Device {
 		this.log('updateControlListeners');
 
     //---- mode
-        var airco_mode_emuras = [ "auto", "auto1", "dehumid", "cooling", "heating", "off", "fan", "auto2" ];                        
+        var airco_modes_emura = [ "auto", "auto1", "dehumid", "cooling", "heating", "off", "fan", "auto2" ];                        
         const amode = Number(control_info[2]);
-        const airco_mode_emura = airco_mode_emuras[amode];	
+        const airco_mode_emura = airco_modes_emura[amode];	
         this.log('mode:', airco_mode_emura);
-        this.setCapabilityValue('airco_mode_emura', airco_mode_emura);
+        // we do not differentiate the modes: auto1 and auto2
+        if (amode != 1 && amode != 7) this.setCapabilityValue('airco_mode_emura', airco_mode_emura);
         
     //---- temperature
 		const atemp = Number(control_info[4]);
@@ -226,12 +228,62 @@ class EmuraDevice extends Device {
 	updateSensorListeners(sensor_info) {        
 		this.log('updateSensorListeners');
 
+	    var oldInsideTemperature = this.getState()['measure_temperature.inside'];
+        this.log('oldInsideTemperature: ', oldInsideTemperature);
+ 	    var oldOutsideTemperature = this.getState()['measure_temperature.outside'];
+        this.log('oldOutsideTemperature: ', oldOutsideTemperature);   
+
 		const inside = Number(sensor_info[1]);
 		const outside = Number(sensor_info[3]);
 		this.setCapabilityValue('measure_temperature.inside', inside);
         this.log('Temp inside:', inside);     
         this.setCapabilityValue('measure_temperature.outside', outside);
         this.log('Temp outside:', outside);            		
+
+    //--- Flowcards logic
+        if (oldInsideTemperature != inside) {
+           this.log('new inside airco temperature °C:', inside);        
+           this.setCapabilityValue('measure_temperature.inside', inside);
+
+	   	   let device = this;
+	   	   let inside_tokens = {
+	   		   'inside_temperature': inside
+	   	   };
+
+	   	   let inside_state  = {
+	   		   'temperature.inside': inside
+	   	   }
+
+	   	   // trigger inside temperature flows
+	   	   let driver = this.getDriver();
+	   	   driver
+	   			.triggerTemperatureMoreThan(device, inside_tokens, inside_state)
+	   			.triggerTemperatureLessThan(device, inside_tokens, inside_state)
+	   			.triggerTemperatureBetween(device, inside_tokens, inside_state);
+
+        }
+         	    
+        if (oldOutsideTemperature != outside) {
+           this.log('new outside airco temperature °C:', outside);        
+           this.setCapabilityValue('measure_temperature.outside', outside);
+       
+ 	   	   let device = this;
+ 	   	   let outside_tokens = {
+ 	   		   'outside_temperature': outside
+ 	   	   };
+       
+ 	   	   let outside_state  = {
+ 	   		   'temperature.outside': outside
+ 	   	   }
+       
+ 	   	   // trigger outside temperature flows
+ 	   	   let driver = this.getDriver();
+ 	   	   driver
+ 	   			.triggerTemperatureMoreThan(device, outside_tokens, outside_state)
+ 	   			.triggerTemperatureLessThan(device, outside_tokens, outside_state)
+ 	   			.triggerTemperatureBetween(device, outside_tokens, outside_state);
+
+        }        		
 		
 		return Promise.resolve();
 	}

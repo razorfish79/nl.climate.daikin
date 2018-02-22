@@ -8,10 +8,9 @@ Adds support for Daikin Airconditioners.
 * can be used for testing flows, familiarization etc. the airco is however always powered of to be safe.
 
 # To-do (in random order)
-* add more flow cards
 * improve and extend "error handling"
-* differentiate capabilities by model (inverter, emura, nexura)
-* debugging...
+* differentiate capabilities by model (inverter, emura, still pending is the nexura)
+* Homekit support
 
 # Development history
 * 31-JAN-18: inside / outside / target temperature (fixed value for now) show on mobile card.
@@ -33,8 +32,11 @@ Adds support for Daikin Airconditioners.
 * 19-FEB-18: 3/ Mode switching: crushed a few bugs
 * 20-FEB-18: The airco can now also be switched off with the mode settings wheel
 * 21-FEB-18: Added a whole bunch of condition flowcards
+* 22-FEB-18: Completed the flowcards for trigger (9x), condition (9x) and action (5x).
 
 # Note: airco's power is always set to OFF when demo mode is selected (= default)
+* Demo mode can be disabled in the device its settings menu. Note: demo mode is very usefull when you are designing new flows demo...
+* mode prevents the airco to be switched on so you can safely experiment and test you new flows (e.g. turn on a lamp iso your airco...).
 
 #Credits
 <div>App uses icons that where created by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>

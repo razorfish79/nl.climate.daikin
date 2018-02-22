@@ -25,8 +25,8 @@ class InverterDevice extends Device {
         // for documentation about the Daikin API look at https://github.com/Apollon77/daikin-controller and at
         // https://github.com/Apollon77/daikin-controller
 
-    	this.setCapabilityValue('airco_mode_inverter', "off");  // ensure a valid and safe mode...
-
+    	this.setCapabilityValue('airco_mode_inverter', "off");  // ensure a valid mode is shown at start up...
+                
         this.inverterIsDeleted = false;
         this.refreshData(); // refresh every x-seconds the Homey app with data retrieved from the airco...
 
@@ -136,60 +136,6 @@ class InverterDevice extends Device {
 		this.log('onCapabilityMeasureTemperature');
 
         // updates by interrogation of the airco, refer to refreshData method.
-        
-    //-------
-        
- 	    var oldOutsideTemperature = this.getState().airco_temperature.outside;
-        this.log('oldOutsideTemperature: ', oldOutsideTemperature);
- 	    
-        if (oldOutsideTemperature != outside) {
-           this.log('new outside airco temperature °C:', outside);        
- 	   	   this.setCapabilityValue('airco_temperature', outside);
-       
- 	   	   let device = this;
- 	   	   let outside_tokens = {
- 	   		   'outside_temperature': outside
- 	   	   };
-       
- 	   	   let outside_state  = {
- 	   		   'temperature.outside': outside
- 	   	   }
-       
- 	   	   // trigger temperature flows
- 	   	   let driver = this.getDriver();
- 	   	   driver
- 	   			.triggerTemperatureMoreThan(device, outside_tokens, outside_state)
- 	   			.triggerTemperatureLessThan(device, outside_tokens, outside_state)
- 	   			.triggerTemperatureBetween(device, outside_tokens, outside_state);
-
-        }
-
-    //-------
-        
-	    var oldInsideTemperature = this.getState().airco_temperature.inside;
-        this.log('oldInsideTemperature: ', oldInsideTemperature);
-
-        if (oldInsideTemperature != inside) {
-           this.log('new outside airco temperature °C:', inside);        
-	   	   this.setCapabilityValue('airco_temperature', inside);
-
-	   	   let device = this;
-	   	   let inside_tokens = {
-	   		   'inside_temperature': inside
-	   	   };
-
-	   	   let inside_state  = {
-	   		   'temperature.inside': inside
-	   	   }
-
-	   	   // trigger temperature flows
-	   	   let driver = this.getDriver();
-	   	   driver
-	   			.triggerTemperatureMoreThan(device, inside_tokens, inside_state)
-	   			.triggerTemperatureLessThan(device, inside_tokens, inside_state)
-	   			.triggerTemperatureBetween(device, inside_tokens, inside_state);
-
-        }
 
 		return Promise.resolve();
              
@@ -281,13 +227,63 @@ class InverterDevice extends Device {
 	updateSensorListeners(sensor_info) {        
 		this.log('updateSensorListeners');
 
+	    var oldInsideTemperature = this.getState()['measure_temperature.inside'];
+        this.log('oldInsideTemperature: ', oldInsideTemperature);
+ 	    var oldOutsideTemperature = this.getState()['measure_temperature.outside'];
+        this.log('oldOutsideTemperature: ', oldOutsideTemperature);   
+
 		const inside = Number(sensor_info[1]);
 		const outside = Number(sensor_info[3]);
 		this.setCapabilityValue('measure_temperature.inside', inside);
         this.log('Temp inside:', inside);     
         this.setCapabilityValue('measure_temperature.outside', outside);
         this.log('Temp outside:', outside);            		
-		
+
+    //--- Flowcards logic
+        if (oldInsideTemperature != inside) {
+           this.log('new inside airco temperature °C:', inside);        
+           this.setCapabilityValue('measure_temperature.inside', inside);
+
+	   	   let device = this;
+	   	   let inside_tokens = {
+	   		   'inside_temperature': inside
+	   	   };
+
+	   	   let inside_state  = {
+	   		   'temperature.inside': inside
+	   	   }
+
+	   	   // trigger inside temperature flows
+	   	   let driver = this.getDriver();
+	   	   driver
+	   			.triggerTemperatureMoreThan(device, inside_tokens, inside_state)
+	   			.triggerTemperatureLessThan(device, inside_tokens, inside_state)
+	   			.triggerTemperatureBetween(device, inside_tokens, inside_state);
+
+        }
+         	    
+        if (oldOutsideTemperature != outside) {
+           this.log('new outside airco temperature °C:', outside);        
+           this.setCapabilityValue('measure_temperature.outside', outside);
+       
+ 	   	   let device = this;
+ 	   	   let outside_tokens = {
+ 	   		   'outside_temperature': outside
+ 	   	   };
+       
+ 	   	   let outside_state  = {
+ 	   		   'temperature.outside': outside
+ 	   	   }
+       
+ 	   	   // trigger outside temperature flows
+ 	   	   let driver = this.getDriver();
+ 	   	   driver
+ 	   			.triggerTemperatureMoreThan(device, outside_tokens, outside_state)
+ 	   			.triggerTemperatureLessThan(device, outside_tokens, outside_state)
+ 	   			.triggerTemperatureBetween(device, outside_tokens, outside_state);
+
+        }
+
 		return Promise.resolve();
 	}
 
