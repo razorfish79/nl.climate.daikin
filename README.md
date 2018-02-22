@@ -4,9 +4,6 @@ Do not use the MASTER branch for now, what is available in the development branc
 # Daikin AC
 Adds support for Daikin Airconditioners.
 
-# Current useability status:
-* can be used for testing flows, familiarization etc. the airco is however always powered of to be safe.
-
 # To-do (in random order)
 * improve and extend "error handling"
 * differentiate capabilities by model (inverter, emura, still pending is the nexura)
